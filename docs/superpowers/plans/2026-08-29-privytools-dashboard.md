@@ -13,11 +13,11 @@
 - Node 26, npm 11 (present). Package manager: npm.
 - TypeScript strict mode. `tsc --noEmit`, `eslint`, `vitest run`, `vite build` all green before "done".
 - No backend, no runtime network calls. Fonts self-hosted via `@fontsource`. No analytics.
-- `localStorage` stores ONLY: favorite tool ids, recent tool ids, theme, telemetry toggle (default off), sidebar-collapsed, privacyMode flag. Never file bytes, names, or contents.
+- `localStorage` stores ONLY: favorite tool ids, recent tool ids, theme mode, dark-palette choice, telemetry toggle (default off), sidebar-collapsed, privacyMode flag. Never file bytes, names, or contents.
 - No file contents to `console` (dev-only logging of an error `.message` string is allowed), analytics, or storage.
 - Object URLs revoked on unmount, on new file, and on reset.
-- Palette exact: `--bg #070707`, `--surface #0D0D0D`, `--surface-hi #121212`, `--border rgba(255,255,255,0.08)`, `--text #F5F5F5`, `--text-dim #8A8A8A`. Category accents: pdf=cool blue, image=violet, privacy=green, ai=purple. Accent on at most one element per view. No large gradients, no heavy glass, no glow spam, no emoji as UI icons.
-- Icons: `lucide-react` only. Mono font (JetBrains Mono) for all sizes, percentages, counts, dimensions, shortcuts.
+- Two fully designed themes: **Light · Porcelain** (default) and **Dark · Carbon**, plus an opt-in **Dark · Obsidian** (`#070707 / #0D0D0D / #121212`, the brief palette). Exact token values in Task 3. Category accents: pdf=cool blue, image=violet, privacy=green, ai=purple — same hue both themes, darker in Light. Accent on at most one element per view. No large gradients, no heavy glass, no glow spam, no emoji as UI icons. Every color comes from a `tokens.css` role token — no color literal anywhere else in `src/`.
+- Icons: `lucide-react` only. Mono font (Geist Mono) for all sizes, percentages, counts, dimensions, shortcuts.
 - Every tool has designed empty / loading / error / success states. Loading is tool-specific, never a generic spinner. Errors never show stack traces; copy: "Something went wrong." / "We couldn't process this file." / "The original file is untouched." / "Try again".
 - Mock tools never present a fabricated transformation as real. They carry `status: 'demo'` and visible honest copy.
 - `prefers-reduced-motion`: disable transforms / beam / particle effects, keep opacity fades.
@@ -85,7 +85,7 @@ src/
 ```bash
 npm init -y
 npm i react react-dom react-router-dom framer-motion cmdk lucide-react zustand pdf-lib
-npm i @fontsource/geist-sans @fontsource/jetbrains-mono
+npm i @fontsource/geist-sans @fontsource/geist-mono @fontsource/inter
 npm i -D vite @vitejs/plugin-react typescript @types/react @types/react-dom \
   tailwindcss @tailwindcss/vite \
   vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom \
@@ -225,40 +225,83 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 
 **Files:** Create `src/design/tokens.css`; modify `src/design/globals.css`; create `tailwind.config.ts`.
 
-**Interfaces:** Produces CSS vars (`--bg --surface --surface-hi --border --border-hi --text --text-dim --accent-* --radius-* --shadow-1 --dur-* --ease-out-expo`) and Tailwind classes `bg-bg bg-surface bg-surface-hi border-border border-border-hi text-text text-dim text-accent rounded-{sm,md,lg} shadow-1 ease-expo`. `[data-accent]` on a wrapper switches `--accent`.
+**Interfaces:** Produces role tokens (`--bg --surface --surface-hi --sunken --raise --track --seg-active --hatch-a --hatch-b --border --border-hi --text --text-dim --accent-* --accent --radius-* --shadow-1 --dur-* --ease-out-expo`), redefined for Dark (Carbon, default), Light (Porcelain), and Dark→Obsidian. Tailwind classes `bg-bg bg-surface bg-surface-hi bg-sunken bg-raise border-border border-border-hi text-text text-dim text-accent rounded-{sm,md,lg} shadow-1 ease-expo`. `[data-accent]` on a wrapper switches `--accent`. Mode/palette applied by `ThemeProvider` (Task 14) via `data-mode` (`light`/`dark`) + `data-theme` (`carbon`/`obsidian`) on `<html>`.
 
 - [ ] **Step 1: `src/design/tokens.css`**
 
+Every color literal in the codebase lives here and nowhere else. Accent hues stay constant across themes; only lightness shifts.
+
 ```css
 :root {
-  --bg: #070707;
-  --surface: #0d0d0d;
-  --surface-hi: #121212;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hi: rgba(255, 255, 255, 0.14);
-  --text: #f5f5f5;
-  --text-dim: #8a8a8a;
+  /* ---- LIGHT · Porcelain (default / bare :root) ---- */
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-hi: #ffffff;
+  --sunken: #f1efe9;
+  --raise: #faf9f6;
+  --track: #e7e4dc;
+  --seg-active: #eeece5;
+  --hatch-a: #efede7;
+  --hatch-b: #f5f3ee;
+  --border: rgba(20, 20, 18, 0.10);
+  --border-hi: rgba(20, 20, 18, 0.22);
+  --text: #16130f;
+  --text-dim: #625d54;
 
-  --accent-pdf: 212 90% 62%;
-  --accent-image: 258 85% 68%;
-  --accent-privacy: 150 55% 55%;
-  --accent-ai: 270 80% 70%;
+  --accent-pdf: 212 76% 42%;
+  --accent-image: 258 58% 48%;
+  --accent-privacy: 150 52% 32%;
+  --accent-ai: 270 58% 48%;
   --accent: var(--accent-pdf);
 
   --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
-  --shadow-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.24);
+  --shadow-1: 0 1px 2px rgba(20,20,18,.06), 0 16px 44px rgba(20,20,18,.09);
   --dur-1: 120ms; --dur-2: 200ms; --dur-3: 320ms; --dur-4: 480ms;
   --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
 }
+
 [data-accent='pdf']     { --accent: var(--accent-pdf); }
 [data-accent='image']   { --accent: var(--accent-image); }
 [data-accent='privacy'] { --accent: var(--accent-privacy); }
 [data-accent='ai']      { --accent: var(--accent-ai); }
 
-:root[data-theme='light'] {
-  --bg: #fafafa; --surface: #fff; --surface-hi: #fff;
-  --border: rgba(0,0,0,.08); --border-hi: rgba(0,0,0,.14);
-  --text: #0b0b0b; --text-dim: #5f5f5f;
+/* ---- DARK · Carbon (default dark) ---- */
+:root[data-mode='dark'] {
+  --bg: #0a0908;
+  --surface: #100e0c;
+  --surface-hi: #16130f;
+  --sunken: #0d0b09;
+  --raise: #1b1712;
+  --track: #241f18;
+  --seg-active: #201b15;
+  --hatch-a: #131009;
+  --hatch-b: #0f0c07;
+  --border: rgba(255, 240, 220, 0.08);
+  --border-hi: rgba(255, 240, 220, 0.16);
+  --text: #f6f2ec;
+  --text-dim: #9a9082;
+  --accent-pdf: 212 90% 62%;
+  --accent-image: 258 85% 68%;
+  --accent-privacy: 150 55% 55%;
+  --accent-ai: 270 80% 70%;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.5), 0 12px 40px rgba(0,0,0,.35);
+}
+
+/* ---- DARK · Obsidian (brief palette, opt-in) ---- */
+:root[data-mode='dark'][data-theme='obsidian'] {
+  --bg: #070707;
+  --surface: #0d0d0d;
+  --surface-hi: #121212;
+  --sunken: #0b0b0b;
+  --raise: #161616;
+  --track: #1e1e1e;
+  --seg-active: #1c1c1c;
+  --hatch-a: #101010;
+  --hatch-b: #0c0c0c;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hi: rgba(255, 255, 255, 0.14);
+  --text: #f5f5f5;
+  --text-dim: #8a8a8a;
 }
 ```
 
@@ -270,12 +313,12 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 @import '@fontsource/geist-sans/400.css';
 @import '@fontsource/geist-sans/500.css';
 @import '@fontsource/geist-sans/600.css';
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/geist-mono/400.css';
+@import '@fontsource/geist-mono/500.css';
 
 @theme {
-  --font-sans: 'Geist Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Geist Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 html, body, #root { height: 100%; }
@@ -305,6 +348,7 @@ export default {
     extend: {
       colors: {
         bg: 'var(--bg)', surface: 'var(--surface)', 'surface-hi': 'var(--surface-hi)',
+        sunken: 'var(--sunken)', raise: 'var(--raise)', track: 'var(--track)',
         border: 'var(--border)', 'border-hi': 'var(--border-hi)',
         text: 'var(--text)', dim: 'var(--text-dim)', accent: 'hsl(var(--accent))',
       },
@@ -317,7 +361,7 @@ export default {
 } satisfies Config;
 ```
 
-- [ ] **Step 4: Verify** — temporarily add `<div className="bg-surface border border-border rounded-md p-6">check</div>` to `main.tsx`, `npm run dev`, see a dark card, revert.
+- [ ] **Step 4: Verify** — temporarily add `<div className="bg-surface border border-border rounded-md p-6">check</div>` to `main.tsx`, `npm run dev`, see a Porcelain (light) card; set `document.documentElement.dataset.mode='dark'` in devtools, confirm it flips to Carbon. Revert.
 
 - [ ] **Step 5: Commit**
 
@@ -997,7 +1041,7 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 **Files:** Create `src/store/prefs.store.ts`, `src/store/handoff.store.ts`, `src/hooks/useFavorites.ts`, `src/hooks/useRecent.ts`; test `src/store/prefs.store.test.ts`.
 
 **Interfaces:**
-- `usePrefs` (zustand, persisted `privytools:prefs`): `{ favorites: string[]; recent: string[]; theme: 'system'|'dark'|'light'; telemetry: boolean; sidebarCollapsed: boolean; privacyMode: boolean; toggleFavorite(id); pushRecent(id); setTheme(t); setTelemetry(b); toggleSidebar(); setPrivacyMode(b) }`
+- `usePrefs` (zustand, persisted `privytools:prefs`): `{ favorites: string[]; recent: string[]; theme: 'system'|'light'|'dark'; darkPalette: 'carbon'|'obsidian'; telemetry: boolean; sidebarCollapsed: boolean; privacyMode: boolean; toggleFavorite(id); pushRecent(id); setTheme(t); setDarkPalette(p); setTelemetry(b); toggleSidebar(); setPrivacyMode(b) }` — `theme` default `'system'`, `darkPalette` default `'carbon'`.
 - `useHandoff` (not persisted): `{ pendingFile: File | null; setPendingFile(f); consume(): File | null }`
 - `useFavorites()` → `{ favorites; isFavorite(id); toggle(id) }`
 - `useRecent()` → `{ recent; push(id) }` — cap 5, most-recent-first, deduped
@@ -1022,9 +1066,12 @@ test('pushRecent caps 5, recent-first, deduped', () => {
   ['a', 'b', 'c', 'd', 'e', 'f', 'b'].forEach((id) => usePrefs.getState().pushRecent(id));
   expect(usePrefs.getState().recent).toEqual(['b', 'f', 'e', 'd', 'c']);
 });
-test('persists theme', () => {
+test('persists theme + darkPalette', () => {
   usePrefs.getState().setTheme('dark');
-  expect(localStorage.getItem('privytools:prefs')).toMatch(/dark/);
+  usePrefs.getState().setDarkPalette('obsidian');
+  const raw = localStorage.getItem('privytools:prefs')!;
+  expect(raw).toMatch(/dark/);
+  expect(raw).toMatch(/obsidian/);
 });
 test('never stores file-shaped data', () => {
   usePrefs.getState().pushRecent('pdf-merge');
@@ -1042,13 +1089,15 @@ test('never stores file-shaped data', () => {
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type Theme = 'system' | 'dark' | 'light';
+type Theme = 'system' | 'light' | 'dark';
+type DarkPalette = 'carbon' | 'obsidian';
 interface PrefsState {
-  favorites: string[]; recent: string[]; theme: Theme;
+  favorites: string[]; recent: string[]; theme: Theme; darkPalette: DarkPalette;
   telemetry: boolean; sidebarCollapsed: boolean; privacyMode: boolean;
   toggleFavorite: (id: string) => void;
   pushRecent: (id: string) => void;
   setTheme: (t: Theme) => void;
+  setDarkPalette: (p: DarkPalette) => void;
   setTelemetry: (b: boolean) => void;
   toggleSidebar: () => void;
   setPrivacyMode: (b: boolean) => void;
@@ -1057,7 +1106,7 @@ interface PrefsState {
 export const usePrefs = create<PrefsState>()(
   persist(
     (set) => ({
-      favorites: [], recent: [], theme: 'system',
+      favorites: [], recent: [], theme: 'system', darkPalette: 'carbon',
       telemetry: false, sidebarCollapsed: false, privacyMode: true,
       toggleFavorite: (id) => set((s) => ({
         favorites: s.favorites.includes(id)
@@ -1067,6 +1116,7 @@ export const usePrefs = create<PrefsState>()(
         recent: [id, ...s.recent.filter((x) => x !== id)].slice(0, 5),
       })),
       setTheme: (theme) => set({ theme }),
+      setDarkPalette: (darkPalette) => set({ darkPalette }),
       setTelemetry: (telemetry) => set({ telemetry }),
       toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
       setPrivacyMode: (privacyMode) => set({ privacyMode }),
@@ -1074,7 +1124,7 @@ export const usePrefs = create<PrefsState>()(
     {
       name: 'privytools:prefs',
       partialize: (s) => ({
-        favorites: s.favorites, recent: s.recent, theme: s.theme,
+        favorites: s.favorites, recent: s.recent, theme: s.theme, darkPalette: s.darkPalette,
         telemetry: s.telemetry, sidebarCollapsed: s.sidebarCollapsed, privacyMode: s.privacyMode,
       }),
     },
@@ -1546,7 +1596,7 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 
 **Interfaces:**
 - `motion.ts`: `fade`, `slideUp`, `scaleIn`, `routeTransition` (`Variants`); `stagger(gap?: number): Variants`; `springSoft`; `maybe(v: Variants, reduced: boolean): Variants` → `fade` when reduced.
-- `ThemeProvider` — reads `usePrefs(s => s.theme)`, resolves `system` via `matchMedia('(prefers-color-scheme: dark)')`, sets `document.documentElement.dataset.theme` to `dark`|`light`, updates on both theme change and media change. Renders children.
+- `ThemeProvider` — reads `usePrefs(s => s.theme)` + `usePrefs(s => s.darkPalette)`, resolves `system` via `matchMedia('(prefers-color-scheme: dark)')`. Sets `document.documentElement.dataset.mode` to `'light'` | `'dark'`; when the resolved mode is `dark` and `darkPalette === 'obsidian'` sets `dataset.theme = 'obsidian'`, otherwise **removes** `dataset.theme` (Carbon is the bare `[data-mode='dark']` default). Updates on theme change, palette change, and media change. Renders children.
 
 - [ ] **Step 1: Failing test `src/app/ThemeProvider.test.tsx`**
 
@@ -1556,12 +1606,20 @@ import { act } from 'react';
 import { ThemeProvider } from './ThemeProvider';
 import { usePrefs } from '../store/prefs.store';
 
-test('sets data-theme from prefs', () => {
-  act(() => usePrefs.setState({ theme: 'light' }));
+test('sets data-mode from prefs.theme', () => {
+  act(() => usePrefs.setState({ theme: 'light', darkPalette: 'carbon' }));
   render(<ThemeProvider><div /></ThemeProvider>);
-  expect(document.documentElement.dataset.theme).toBe('light');
+  expect(document.documentElement.dataset.mode).toBe('light');
   act(() => usePrefs.setState({ theme: 'dark' }));
-  expect(document.documentElement.dataset.theme).toBe('dark');
+  expect(document.documentElement.dataset.mode).toBe('dark');
+  expect(document.documentElement.dataset.theme).toBeUndefined();
+});
+test('obsidian palette only stamps data-theme in dark mode', () => {
+  render(<ThemeProvider><div /></ThemeProvider>);
+  act(() => usePrefs.setState({ theme: 'dark', darkPalette: 'obsidian' }));
+  expect(document.documentElement.dataset.theme).toBe('obsidian');
+  act(() => usePrefs.setState({ theme: 'light' }));
+  expect(document.documentElement.dataset.theme).toBeUndefined();
 });
 ```
 
@@ -1596,16 +1654,20 @@ import { usePrefs } from '../store/prefs.store';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = usePrefs((s) => s.theme);
+  const darkPalette = usePrefs((s) => s.darkPalette);
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const apply = () => {
-      const resolved = theme === 'system' ? (mq.matches ? 'dark' : 'light') : theme;
-      document.documentElement.dataset.theme = resolved;
+      const mode = theme === 'system' ? (mq.matches ? 'dark' : 'light') : theme;
+      const root = document.documentElement;
+      root.dataset.mode = mode;
+      if (mode === 'dark' && darkPalette === 'obsidian') root.dataset.theme = 'obsidian';
+      else delete root.dataset.theme;
     };
     apply();
     mq.addEventListener('change', apply);
     return () => mq.removeEventListener('change', apply);
-  }, [theme]);
+  }, [theme, darkPalette]);
   return <>{children}</>;
 }
 ```
@@ -1717,7 +1779,7 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 **Interfaces:**
 - Consumes `TOOLS`, `CATEGORIES`, `toolsByCategory`, `useFavorites`, `useRecent`, `usePrefs` (`sidebarCollapsed`, `toggleSidebar`), `getTool`.
 - `Sidebar` — logo; Home `NavLink` to `/`; a group per category (`pdf`, `image`, `privacy`, `ai`) with its tools as `NavLink`s to `tool.route`; Favorites section (tools from `favorites`); Recent section (tools from `recent`); collapse toggle button. When `sidebarCollapsed` at `lg`, render icon-only with `Tooltip` labels. Active link styling via `NavLink` `isActive`.
-- `Topbar` — mobile logo (hidden `≥lg`); spacer; command-palette trigger `<button>` with search icon + `<Kbd>⌘K</Kbd>` (accepts `onOpenPalette` prop); theme `Dropdown` (`system`/`dark`/`light` → `usePrefs.setTheme`); Settings link → `/privacy#preferences`.
+- `Topbar` — mobile logo (hidden `≥lg`); spacer; command-palette trigger `<button>` with search icon + `<Kbd>⌘K</Kbd>` (accepts `onOpenPalette` prop); theme `Dropdown` — `system` / `light` / `dark` → `usePrefs.setTheme`, plus, when the resolved mode is dark, a `carbon` / `obsidian` sub-choice → `usePrefs.setDarkPalette`; Settings link → `/privacy#preferences`.
 - `MobileNav` — 4 `NavLink`s: Home `/`, PDF `/pdf/merge`, Image `/image/compress`, Privacy `/privacy`; icon + label; active highlight.
 
 - [ ] **Step 1: Failing test `src/app/Sidebar.test.tsx`**
@@ -2385,14 +2447,15 @@ Claude-Session: https://claude.ai/code/session_01P5CGW7XmbuXSx91S6XXUfL"
 
 ## Task 31: Responsive + reduced-motion + a11y pass
 
-**Files:** Modify components with gaps found (expect `Sidebar`, `MobileNav`, tool route layouts, `BeforeAfterComparison`, dashboard grid, token `--text-dim`). Create `src/a11y.test.tsx`.
+**Files:** Modify components with gaps found (expect `Sidebar`, `MobileNav`, tool route layouts, `BeforeAfterComparison`, dashboard grid, `tokens.css`). Create `src/a11y.test.tsx`.
 
 - [ ] **Step 1: Reduced-motion audit** — force `useReducedMotion` true (temp dev flag or OS setting); walk all 7 routes + palette + drag-to-action; confirm no looping transforms/beams/particles, opacity fades remain, nothing stuck invisible.
 - [ ] **Step 2: Responsive audit** at 375 / 768 / 1024 / 1440: sidebar ↔ rail ↔ sheet; bottom nav <768; tool controls stack; before/after drags with touch emulation; no horizontal page scroll; dropzones tappable.
 - [ ] **Step 3: Keyboard audit** — Tab every route: visible focus everywhere; palette fully operable; dialogs trap + restore focus; `Segmented` / `Slider` / `BeforeAfterComparison` arrow-operable; skip-to-content works.
 - [ ] **Step 4: Screen-reader smoke** — processing phases announce via `aria-live`; icon-only buttons have `aria-label`; `<img>` have `alt`.
-- [ ] **Step 5: Contrast** — check `--text-dim` `#8A8A8A` on `#070707` / `#0D0D0D`. `#8A8A8A` on `#070707` ≈ 4.6:1 — OK for body; on `#121212` ≈ 4.3:1 — restrict `dim` on elevated surfaces to large/secondary text, or lighten `--text-dim` to `#949494`. Apply whichever keeps the design intent; note the choice in a comment in `tokens.css`.
-- [ ] **Step 6: `src/a11y.test.tsx`**
+- [ ] **Step 5: Theme audit** — walk `/_ds` and all 7 routes in **Light (Porcelain)**, **Dark (Carbon)**, and **Dark (Obsidian)**; confirm nothing borrows the wrong theme's color (the tell: a literal outside `tokens.css`), the theme toggle + palette sub-choice both take effect live, and `system` follows the OS setting.
+- [ ] **Step 6: Contrast** — in each theme check `--text-dim` on `--bg` and on `--surface-hi`, and each accent token where it carries text/icon meaning, against WCAG AA (4.5:1 body, 3:1 large/icon). Dark Carbon `#9A9082` on `#0A0908` ≈ 6.5:1 OK; Light Porcelain `#625D54` on `#F7F6F3` ≈ 5.6:1 OK; Light accents were pre-darkened for this — re-verify and nudge the token lightness (not per-component overrides) if any fails. Note any change in a `tokens.css` comment.
+- [ ] **Step 7: `src/a11y.test.tsx`**
 
 ```tsx
 import { render, screen } from '@testing-library/react';
@@ -2413,7 +2476,7 @@ test('every button on the merge route has an accessible name', async () => {
 });
 ```
 
-- [ ] **Step 7: Fix findings, re-walk, commit**
+- [ ] **Step 8: Fix findings, re-walk, commit**
 
 ```bash
 git add -A && git commit -m "fix: responsive, reduced-motion, accessibility pass across all routes

@@ -31,21 +31,21 @@ is local when it is not.
   - `/image/upscale` Image Upscaler
   - `/privacy` Privacy Center
 - Shared design system + shared tool primitive components.
+- Light (Porcelain) and Dark (Carbon) themes, both fully designed, with a
+  `system | light | dark` mode toggle + a dark-palette sub-option (see §5).
 - Two tools with **real** in-browser processing: PDF Merge, Image Compress.
 - Three tools with **honest mock** processing behind a service interface:
   PDF Security, PDF Compress, Image Upscale.
 - Responsive: desktop, tablet, mobile. Touch support for dropzones and
   before/after comparison.
 - Accessibility: keyboard nav, focus-visible, ARIA labels, `aria-live` status,
-  `prefers-reduced-motion`, contrast against `#070707`.
+  `prefers-reduced-motion`, contrast checked in both themes.
 - Tests: registry integrity, tool-runner state machine, byte formatting, real
   merge + compress services. `tsc`, `eslint`, `vite build` green.
 
 ### Out of scope (deferred, architecture must not block)
 
 - Real engines for PDF Security / PDF Compress / AI Upscale.
-- Light theme as a full design (toggle ships; dark is the only fully designed
-  theme — see §5).
 - Any backend / server / cloud processing. No deploy config.
 - The 30–40 future tools listed in the brief (§25).
 - Persisted history of processed files (only tool *names* are remembered).
@@ -62,8 +62,8 @@ is local when it is not.
 | Animation | Motion (`framer-motion`) | Shared layout transitions, drag physics, sliders, magnetic buttons; honors reduced-motion |
 | Command palette | `cmdk` | De-facto standard, small, accessible |
 | Icons | `lucide-react` | One thin consistent library, no emoji as UI icons |
-| Fonts | `@fontsource` (Geist Sans, Geist Mono, JetBrains Mono) | Self-hosted, no CDN calls — consistent with privacy story |
-| State | Zustand + `localStorage` (prefs only) | Favorites, recent tool names, theme, telemetry toggle. Never file data. |
+| Fonts | `@fontsource` (Geist Sans, Geist Mono) | Self-hosted, no CDN calls — consistent with privacy story. Geist Mono covers all technical/metadata type; JetBrains Mono dropped. |
+| State | Zustand + `localStorage` (prefs only) | Favorites, recent tool names, theme mode, telemetry toggle. Never file data. |
 | PDF | `pdf-lib` | Real merge; metadata read for previews |
 | Image compress | `browser-image-compression` + canvas | Real, worker-friendly |
 | Heavy work | Web Workers (`pdf.worker.ts`, `image.worker.ts`) | Keep UI responsive |
@@ -193,24 +193,42 @@ interface FileResult {
 
 ### Tokens (`design/tokens.css`, CSS custom properties)
 
-```
---bg:            #070707
---surface:       #0D0D0D
---surface-hi:    #121212
---border:        rgba(255,255,255,0.08)
---border-hi:     rgba(255,255,255,0.14)
---text:          #F5F5F5
---text-dim:      #8A8A8A
---accent-pdf:     hsl(212 90% 62%)   /* cool blue */
---accent-image:   hsl(258 85% 68%)   /* violet */
---accent-privacy: hsl(150 55% 55%)   /* green */
---accent-ai:      hsl(270 80% 70%)   /* purple */
+warm-neutral pair so the product reads as one identity in either mode. Tokens
+are role names; each theme redefines the same set. Category accents keep the
+same hue in both themes, darkened for contrast in Light.
 
---radius-sm: 8px  --radius-md: 12px  --radius-lg: 16px
---shadow-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.24)
---dur-1: 120ms  --dur-2: 200ms  --dur-3: 320ms  --dur-4: 480ms
---ease-out-expo: cubic-bezier(.16,1,.3,1)
 ```
+/* role tokens (both themes define all of these) */
+--bg  --surface  --surface-hi  --sunken  --raise
+--border  --border-hi  --text  --text-dim
+--track  --seg-active  --hatch-a  --hatch-b   /* control + placeholder surfaces */
+--accent-pdf  --accent-image  --accent-privacy  --accent-ai
+--accent        /* set per view from the tool category */
+--radius-sm 8px  --radius-md 12px  --radius-lg 16px
+--shadow-1
+--dur-1 120ms  --dur-2 200ms  --dur-3 320ms  --dur-4 480ms
+--ease-out-expo cubic-bezier(.16,1,.3,1)
+
+/* DARK · Carbon */
+--bg #0A0908  --surface #100E0C  --surface-hi #16130F  --sunken #0D0B09  --raise #1B1712
+--border rgba(255,240,220,.08)  --border-hi rgba(255,240,220,.16)
+--text #F6F2EC  --text-dim #9A9082
+--accent-pdf hsl(212 90% 62%)  --accent-image hsl(258 85% 68%)
+--accent-privacy hsl(150 55% 55%)  --accent-ai hsl(270 80% 70%)
+--shadow-1 0 1px 2px rgba(0,0,0,.5), 0 12px 40px rgba(0,0,0,.35)
+
+/* LIGHT · Porcelain */
+--bg #F7F6F3  --surface #FFFFFF  --surface-hi #FFFFFF  --sunken #F1EFE9  --raise #FAF9F6
+--border rgba(20,20,18,.10)  --border-hi rgba(20,20,18,.22)
+--text #16130F  --text-dim #625D54
+--accent-pdf hsl(212 76% 42%)  --accent-image hsl(258 58% 48%)
+--accent-privacy hsl(150 52% 32%)  --accent-ai hsl(270 58% 48%)
+--shadow-1 0 1px 2px rgba(20,20,18,.06), 0 16px 44px rgba(20,20,18,.09)
+```
+
+Alternate dark palette **Obsidian** (the brief's exact `#070707 / #0D0D0D /
+#121212` neutral set) ships as a third `data-theme` option behind the mode
+toggle — one extra token block, selectable but not the default.
 
 Spacing: 4px base scale via Tailwind defaults. One elevation shadow, one border
 style. Accent used for at most one element per view (icon, focus ring, or a
@@ -218,11 +236,12 @@ single highlight) — never as fills or gradients across the UI.
 
 ### Theme
 
-Dark is the only fully designed theme (brief: "primary design Luxury Dark").
-Theme toggle ships with `system | dark | light`. Light = a tasteful token remap
-(bg → near-white, text inverted) applied only where cheap; if a control looks
-wrong in light within the time box, the toggle hides `light` and ships
-`system | dark`. Dark quality is never traded for light coverage.
+Both **Dark (Carbon)** and **Light (Porcelain)** are fully designed and
+maintained. A mode control ships `system | light | dark`; `system` resolves via
+`prefers-color-scheme`. In dark, a secondary `data-theme` picker offers
+`carbon` (default) or `obsidian` (brief palette). Theme + mode persist in
+`localStorage`. Applied via `data-mode` / `data-theme` on `<html>` (see
+`ThemeProvider`).
 
 ### Typography
 
@@ -230,7 +249,7 @@ wrong in light within the time box, the toggle hides `light` and ships
   strong size jumps between levels.
 - Body / UI: Geist Sans (Inter as fallback stack).
 - Technical metadata — file sizes, percentages, counts, dimensions, shortcuts:
-  JetBrains Mono.
+  **Geist Mono**.
 - Generous whitespace; content max-width ~880px on tool pages, wider on
   dashboard grid.
 
@@ -330,8 +349,9 @@ Keyboard nav across shell, palette, tool flows. `:focus-visible` ring using an
 accent token. Dropzone is a labelled button with `role` and key handler. Every
 icon-only control has `aria-label`. Processing phases announced via
 `aria-live="polite"`. `prefers-reduced-motion` disables transforms/beam/particle
-effects, keeps opacity. Contrast verified: `--text` and `--text-dim` on `--bg`
-and `--surface`.
+effects, keeps opacity. Contrast verified in every theme (Porcelain, Carbon,
+Obsidian): `--text` and `--text-dim` on `--bg` / `--surface-hi`, and each accent
+token where it carries text or icon meaning.
 
 ## 12. Security / privacy rules
 
@@ -378,8 +398,10 @@ and `--surface`.
   interface unchanged.
 - **Tailwind v4** — newer config surface. Mitigation: if v4 friction appears,
   drop to v3.4 — token file and class usage stay the same.
-- **Light theme scope creep** — explicitly bounded in §5; drop to `system|dark`.
+- **Two full themes** — every component styled via role tokens only; any color
+  literal outside `tokens.css` is a bug. `/_ds` gallery is walked in both modes
+  before Task 32 signs off. Obsidian is a token block, not extra components.
 - **PDF first-page preview** — pulling `pdf.js` is heavy. Mitigation: ship a
   document glyph + filename preview first; real render only if time allows.
-- **Geist via @fontsource** — package name/coverage. Mitigation: Inter from
-  `@fontsource` as the shipped fallback, identical stack.
+- **Geist Sans/Mono via @fontsource** — package name/coverage. Mitigation: Inter
+  + a system mono as the shipped fallback stacks, identical metrics target.
