@@ -1,10 +1,10 @@
 # PrivyTools
 
 A privacy-first daily file utility suite. One application shell, one dashboard,
-seven tool experiences that share a design system, routing, and honest
-local-first processing.
+seven tool experiences that share a design system, routing, and on-device
+processing.
 
-> Your files stay yours. Processed locally whenever technically possible.
+> Your files stay yours. Every operation runs on your device.
 
 ## Run
 
@@ -18,29 +18,32 @@ Other scripts: `npm run build`, `npm run preview`, `npm test`, `npm run lint`, `
 ## Stack
 
 Vite - React 19 - TypeScript - React Router 7 - Tailwind CSS v4 - Motion
-(framer-motion) - cmdk - lucide-react - Zustand - pdf-lib. Fonts (Space Grotesk,
-Geist Mono) are self-hosted via `@fontsource` - no CDN calls at runtime.
+(framer-motion) - cmdk - lucide-react - Zustand. Engines: pdf-lib (merge),
+MuPDF wasm (encrypt / optimize), canvas (image compress / enlarge). Fonts
+(Space Grotesk, Geist Mono) are self-hosted via `@fontsource` - no CDN calls.
 
-## Which tools are real vs demo
+## Tools - all real, all on-device
 
-| Tool | Route | Status |
+| Tool | Route | Engine |
 |---|---|---|
-| PDF Merge | `/pdf/merge` | **Real** - merges in the browser with pdf-lib |
-| Image Compress | `/image/compress` | **Real** - re-encodes via canvas |
-| PDF Security | `/pdf/security` | Demo - honest mock behind `ToolService`; original file returned unchanged |
-| PDF Compress | `/pdf/compress` | Demo - shows a real original size and an estimate only |
-| Image Upscale | `/image/upscale` | Demo - real bicubic preview, labelled; AI engine not connected |
-| Privacy Center | `/privacy` | Informational - reads the registry |
+| PDF Merge | `/pdf/merge` | pdf-lib - combine + reorder in the browser |
+| PDF Security | `/pdf/security` | MuPDF wasm - real AES-256 add / password-verified remove |
+| PDF Compress | `/pdf/compress` | MuPDF wasm - image + font + stream recompression, garbage collection; never returns a file larger than the input |
+| Image Compress | `/image/compress` | canvas re-encode to JPG / PNG / WebP with a quality + target-size |
+| Image Upscale | `/image/upscale` | stepped high-quality canvas resample (2x hops) + 3x3 unsharp-mask sharpen. No AI. |
+| Privacy Center | `/privacy` | reads the registry |
 
-Demo tools carry a visible "Demo" badge and never present a fabricated
-transformation as a real one.
+The heavy wasm/engine for each tool is lazy-loaded only when you open that
+route (MuPDF wasm is ~10MB).
 
 ## Privacy
 
-- No backend, no analytics, no runtime network calls.
+- No backend, no analytics, no runtime network calls. Nothing is uploaded.
 - `localStorage` holds only: favourite tool ids, recent tool ids, theme mode,
   telemetry toggle (off by default), sidebar state. Never file bytes or names.
 - Object URLs are revoked on unmount, new file, and reset.
+- PDF Security passwords cannot contain `,` or `=` (a limit of the MuPDF
+  option interface) - the UI says so.
 
 ## Adding a tool
 
@@ -59,4 +62,3 @@ Light (Porcelain) and Dark (Carbon), both fully designed. Toggle in the top bar
 
 `/_ds` (dev builds only) renders every primitive, tool component, and animation
 with a reduced-motion toggle.
-

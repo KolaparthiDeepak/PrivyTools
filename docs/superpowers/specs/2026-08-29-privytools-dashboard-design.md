@@ -403,3 +403,29 @@ where it carries text or icon meaning.
   document glyph + filename preview first; real render only if time allows.
 - **Space Grotesk / Geist Mono via @fontsource** — package name/coverage.
   Mitigation: `system-ui` + a system mono as the shipped fallback stacks.
+---
+
+## Addendum (post-approval): all engines made real
+
+Superseded the demo/mock split. Every processing tool now runs a real
+on-device engine:
+
+- **PDF Security** — MuPDF wasm. Real AES-256 encrypt; decrypt authenticates
+  the password first (`ToolError` "did not unlock" on mismatch). Passwords may
+  not contain `,` or `=` (MuPDF option-string limitation), surfaced in the UI.
+- **PDF Compress** — MuPDF wasm. `compress + compress-images + compress-fonts +
+  garbage=compact`. Returns the original file unchanged when the result would
+  be larger. Big gains only on image-heavy PDFs; copy no longer promises a %.
+- **Image Upscale** — deliberately **not AI** (user decision). Real stepped
+  high-quality canvas resampling (2× hops) + a 3×3 unsharp-mask sharpen slider
+  + a smoothing toggle. Retitled "Bigger, sharper images.", category `image`.
+
+Registry: all five processing tools are `status: 'live'`, `processing:
+'local'`. `ResultCard`'s `demo` branch is retained but currently unused. Demo
+`Badge`s removed from routes. `PrivacyPill` and Privacy Center now truthfully
+report every operation as local.
+
+MuPDF wasm (~10MB) is lazy-loaded only on the three PDF routes via
+`src/services/mupdf.ts`. `pdf.service.test.ts` runs in the Vitest **node**
+environment against the real engine (AES round-trip, wrong-password, page-count
+preservation).
