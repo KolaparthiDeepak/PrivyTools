@@ -10,6 +10,7 @@ import { CommandPalette } from './CommandPalette';
 import { useCommandPalette } from '../hooks/useCommandPalette';
 import { PrivacyPill } from './PrivacyPill';
 import { DragToAction } from './DragToAction';
+import { SplashScreen } from './SplashScreen';
 import { usePrefs } from '../store/prefs.store';
 import { cn } from '../lib/cn';
 
@@ -61,6 +62,7 @@ export function AppShell() {
       <CommandPalette open={palette.open} onOpenChange={palette.setOpen} />
       <PrivacyPill />
       <DragToAction />
+      <SplashScreen />
     </ThemeProvider>
   );
 }
