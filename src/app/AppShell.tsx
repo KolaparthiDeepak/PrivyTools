@@ -3,6 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ThemeProvider } from './ThemeProvider';
 import { routeTransition } from '../design/motion';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { Sidebar } from './Sidebar';
+import { Topbar } from './Topbar';
+import { MobileNav } from './MobileNav';
 
 export function AppShell() {
   const loc = useLocation();
@@ -16,9 +19,13 @@ export function AppShell() {
         Skip to content
       </a>
       <div className="grid h-full grid-cols-1 lg:grid-cols-[240px_1fr]">
-        <aside id="sidebar-slot" className="hidden border-r border-border lg:block" />
+        <aside className="hidden overflow-y-auto border-r border-border lg:block">
+          <Sidebar />
+        </aside>
         <div className="flex min-w-0 flex-col">
-          <header id="topbar-slot" className="h-14 border-b border-border" />
+          <header className="h-14 shrink-0 border-b border-border">
+            <Topbar onOpenPalette={() => {}} />
+          </header>
           <div id="content" className="min-h-0 flex-1 overflow-auto">
             <AnimatePresence mode="wait">
               <motion.div
@@ -33,7 +40,9 @@ export function AppShell() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <nav id="mobilenav-slot" className="border-t border-border lg:hidden" />
+          <nav className="shrink-0 border-t border-border lg:hidden">
+            <MobileNav />
+          </nav>
         </div>
       </div>
     </ThemeProvider>
