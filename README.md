@@ -62,3 +62,10 @@ Light (Porcelain) and Dark (Carbon), both fully designed. Toggle in the top bar
 
 `/_ds` (dev builds only) renders every primitive, tool component, and animation
 with a reduced-motion toggle.
+
+## Deploy (Vercel)
+
+`vercel.json` is included: Vite framework preset, `dist` output, SPA rewrite so
+client routes survive a refresh, immutable caching for hashed assets, and an
+explicit `application/wasm` type for the MuPDF blob. Import the repo in Vercel
+and deploy - no dashboard settings needed. Or `npx vercel`.
