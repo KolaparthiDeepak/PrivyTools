@@ -34,7 +34,6 @@ export function useDropzone({ accept, multiple = false, onFile, onReject }: Opts
       ref: inputRef,
       type: 'file' as const,
       hidden: true,
-      accept: accept.join(','),
       multiple,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleFiles(e.target.files),
     },
