@@ -32,7 +32,7 @@ is local when it is not.
   - `/privacy` Privacy Center
 - Shared design system + shared tool primitive components.
 - Light (Porcelain) and Dark (Carbon) themes, both fully designed, with a
-  `system | light | dark` mode toggle + a dark-palette sub-option (see §5).
+  `system | light | dark` mode toggle (see §5).
 - Two tools with **real** in-browser processing: PDF Merge, Image Compress.
 - Three tools with **honest mock** processing behind a service interface:
   PDF Security, PDF Compress, Image Upscale.
@@ -62,7 +62,7 @@ is local when it is not.
 | Animation | Motion (`framer-motion`) | Shared layout transitions, drag physics, sliders, magnetic buttons; honors reduced-motion |
 | Command palette | `cmdk` | De-facto standard, small, accessible |
 | Icons | `lucide-react` | One thin consistent library, no emoji as UI icons |
-| Fonts | `@fontsource` (Geist Sans, Geist Mono) | Self-hosted, no CDN calls — consistent with privacy story. Geist Mono covers all technical/metadata type; JetBrains Mono dropped. |
+| Fonts | `@fontsource` (Space Grotesk, Geist Mono) | Self-hosted, no CDN calls — consistent with privacy story. Space Grotesk = display + UI; Geist Mono = all technical/metadata type. |
 | State | Zustand + `localStorage` (prefs only) | Favorites, recent tool names, theme mode, telemetry toggle. Never file data. |
 | PDF | `pdf-lib` | Real merge; metadata read for previews |
 | Image compress | `browser-image-compression` + canvas | Real, worker-friendly |
@@ -193,6 +193,7 @@ interface FileResult {
 
 ### Tokens (`design/tokens.css`, CSS custom properties)
 
+Two fully designed themes — **Light · Porcelain** and **Dark · Carbon** — a
 warm-neutral pair so the product reads as one identity in either mode. Tokens
 are role names; each theme redefines the same set. Category accents keep the
 same hue in both themes, darkened for contrast in Light.
@@ -226,9 +227,8 @@ same hue in both themes, darkened for contrast in Light.
 --shadow-1 0 1px 2px rgba(20,20,18,.06), 0 16px 44px rgba(20,20,18,.09)
 ```
 
-Alternate dark palette **Obsidian** (the brief's exact `#070707 / #0D0D0D /
-#121212` neutral set) ships as a third `data-theme` option behind the mode
-toggle — one extra token block, selectable but not the default.
+The brief's stated dark hexes (`#070707 / #0D0D0D / #121212`) are superseded by
+Carbon per the user's explicit choice; the palette above is authoritative.
 
 Spacing: 4px base scale via Tailwind defaults. One elevation shadow, one border
 style. Accent used for at most one element per view (icon, focus ring, or a
@@ -236,18 +236,16 @@ single highlight) — never as fills or gradients across the UI.
 
 ### Theme
 
-Both **Dark (Carbon)** and **Light (Porcelain)** are fully designed and
+Both **Light (Porcelain)** and **Dark (Carbon)** are fully designed and
 maintained. A mode control ships `system | light | dark`; `system` resolves via
-`prefers-color-scheme`. In dark, a secondary `data-theme` picker offers
-`carbon` (default) or `obsidian` (brief palette). Theme + mode persist in
-`localStorage`. Applied via `data-mode` / `data-theme` on `<html>` (see
-`ThemeProvider`).
+`prefers-color-scheme`. Mode persists in `localStorage`, applied as `data-mode`
+(`light` / `dark`) on `<html>` (see `ThemeProvider`). No dark sub-palettes.
 
 ### Typography
 
-- Display / headings: Geist Sans, tight tracking, `clamp()` hero up to ~64px,
-  strong size jumps between levels.
-- Body / UI: Geist Sans (Inter as fallback stack).
+- Display / headings: **Space Grotesk**, tight tracking (`--tracking-display
+  -.035em`), `clamp()` hero up to ~64px, strong size jumps between levels.
+- Body / UI: Space Grotesk (system-ui fallback stack).
 - Technical metadata — file sizes, percentages, counts, dimensions, shortcuts:
   **Geist Mono**.
 - Generous whitespace; content max-width ~880px on tool pages, wider on
@@ -349,9 +347,9 @@ Keyboard nav across shell, palette, tool flows. `:focus-visible` ring using an
 accent token. Dropzone is a labelled button with `role` and key handler. Every
 icon-only control has `aria-label`. Processing phases announced via
 `aria-live="polite"`. `prefers-reduced-motion` disables transforms/beam/particle
-effects, keeps opacity. Contrast verified in every theme (Porcelain, Carbon,
-Obsidian): `--text` and `--text-dim` on `--bg` / `--surface-hi`, and each accent
-token where it carries text or icon meaning.
+effects, keeps opacity. Contrast verified in both themes (Porcelain, Carbon):
+`--text` and `--text-dim` on `--bg` / `--surface-hi`, and each accent token
+where it carries text or icon meaning.
 
 ## 12. Security / privacy rules
 
@@ -400,8 +398,8 @@ token where it carries text or icon meaning.
   drop to v3.4 — token file and class usage stay the same.
 - **Two full themes** — every component styled via role tokens only; any color
   literal outside `tokens.css` is a bug. `/_ds` gallery is walked in both modes
-  before Task 32 signs off. Obsidian is a token block, not extra components.
+  before Task 32 signs off.
 - **PDF first-page preview** — pulling `pdf.js` is heavy. Mitigation: ship a
   document glyph + filename preview first; real render only if time allows.
-- **Geist Sans/Mono via @fontsource** — package name/coverage. Mitigation: Inter
-  + a system mono as the shipped fallback stacks, identical metrics target.
+- **Space Grotesk / Geist Mono via @fontsource** — package name/coverage.
+  Mitigation: `system-ui` + a system mono as the shipped fallback stacks.
