@@ -46,9 +46,9 @@ export const TOOLS: Tool[] = [
     processing: 'local', status: 'live', accept: IMG,
   },
   {
-    id: 'image-upscale', name: 'Upscale Image', description: 'Enhance resolution and detail',
-    route: '/image/upscale', category: 'ai', icon: Sparkles,
-    processing: 'local-partial', status: 'demo', accept: IMG,
+    id: 'image-upscale', name: 'Upscale Image', description: 'Enlarge and sharpen images',
+    route: '/image/upscale', category: 'image', icon: Sparkles,
+    processing: 'local', status: 'live', accept: IMG,
   },
   {
     id: 'privacy-center', name: 'Privacy Center', description: 'How your files are handled',

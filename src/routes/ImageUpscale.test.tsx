@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ImageUpscale from './ImageUpscale';
 
-test('is honest that AI is not connected', () => {
+test('is explicit that there is no AI', () => {
   render(
     <MemoryRouter>
       <ImageUpscale />
     </MemoryRouter>,
   );
-  expect(screen.getByText(/bicubic scaling/i)).toBeInTheDocument();
+  expect(screen.getByText(/no ai/i)).toBeInTheDocument();
 });

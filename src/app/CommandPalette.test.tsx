@@ -9,7 +9,7 @@ test('filters by query', async () => {
       <CommandPalette open onOpenChange={() => {}} />
     </MemoryRouter>,
   );
-  await userEvent.type(screen.getByPlaceholderText(/what do you want to do/i), 'merge');
-  expect(screen.getByText(/Merge PDF/i)).toBeInTheDocument();
-  expect(screen.queryByText(/Upscale Image/i)).toBeNull();
+  await userEvent.type(screen.getByPlaceholderText(/what do you want to do/i), 'security');
+  expect(screen.getByText(/PDF Security/i)).toBeInTheDocument();
+  expect(screen.queryByText(/Merge PDF/i)).toBeNull();
 });

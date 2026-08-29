@@ -9,7 +9,6 @@ test('rows for every tool with mode + note', () => {
     expect(r.note).toBeTruthy();
   });
 });
-test('demo tools described honestly', () => {
-  const sec = privacyStatus().find((r) => r.toolId === 'pdf-security')!;
-  expect(sec.note.toLowerCase()).toMatch(/demo|preview|not yet|pending/);
+test('all processing tools now run locally', () => {
+  expect(privacyStatus().every((r) => r.mode === 'local')).toBe(true);
 });

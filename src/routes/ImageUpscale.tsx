@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
 import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useObjectUrl } from '../hooks/useObjectUrl';
-import { upscaleImage } from '../services/upscale.service';
+import { upscaleImage, type ResizeConfig } from '../services/upscale.service';
 import { ToolHeader } from '../components/tool/ToolHeader';
 import { FileDropzone } from '../components/tool/FileDropzone';
 import { FilePreview } from '../components/tool/FilePreview';
@@ -16,18 +16,12 @@ import { ErrorState } from '../components/tool/ErrorState';
 import { StepFlow } from '../components/tool/StepFlow';
 import { BeforeAfterComparison } from '../components/tool/BeforeAfterComparison';
 import ScanBeamAnim from '../components/tool/anims/ScanBeamAnim';
-import { Badge, Button, Segmented, Slider, Tooltip } from '../components/ui';
+import { Button, Segmented, Slider } from '../components/ui';
 
 const tool = getTool('image-upscale')!;
-interface Config {
-  scale: 2 | 4;
-  sharpness: number;
-  noise: number;
-  face: number;
-}
 
 export default function ImageUpscale() {
-  const runner = useToolRunner<Config>(upscaleImage, { scale: 2, sharpness: 0.5, noise: 0.3, face: 0.5 });
+  const runner = useToolRunner<ResizeConfig>(upscaleImage, { scale: 2, sharpen: 0.4, smoothing: true });
   const consume = useHandoff((s) => s.consume);
   const { push } = useRecent();
   const reduced = useReducedMotion();
@@ -44,25 +38,13 @@ export default function ImageUpscale() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runner.step]);
 
-  const disabledSlider = (label: string, value: number) => (
-    <Tooltip content="Available when the AI engine is connected">
-      <div className="pointer-events-none w-full opacity-40">
-        <label className="font-mono text-[10.5px] uppercase tracking-widest text-dim">{label}</label>
-        <Slider min={0} max={1} step={0.1} value={value} onChange={() => {}} aria-label={label} />
-      </div>
-    </Tooltip>
-  );
-
   return (
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader
         tool={tool}
-        title="From pixels to clarity."
-        subtitle="Enhance image resolution while preserving important detail."
+        title="Bigger, sharper images."
+        subtitle="Enlarge with stepped high-quality resampling and an unsharp mask. No AI, runs on your device."
       />
-      <Badge tone="warn" className="self-start">
-        Demo - real AI enhancement not yet connected. Preview uses bicubic scaling.
-      </Badge>
       <StepFlow
         step={runner.step}
         views={{
@@ -71,8 +53,8 @@ export default function ImageUpscale() {
               accept={tool.accept}
               mode={tool.processing}
               onFile={runner.selectFile}
-              glyph={<Sparkles className="size-8" />}
-              headline="Drop an image to enhance"
+              glyph={<Maximize2 className="size-8" />}
+              headline="Drop an image to enlarge"
               hint="JPG, PNG or WebP."
             />
           ),
@@ -91,17 +73,35 @@ export default function ImageUpscale() {
                   ]}
                 />
               </div>
-              {disabledSlider('Sharpness', runner.config.sharpness)}
-              {disabledSlider('Noise reduction', runner.config.noise)}
-              {disabledSlider('Face detail', runner.config.face)}
+              <div className="flex flex-col gap-2">
+                <label className="font-mono text-[10.5px] uppercase tracking-widest text-dim">Sharpen</label>
+                <Slider
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={runner.config.sharpen}
+                  onChange={(v) => runner.setConfig({ sharpen: v })}
+                  leftLabel="Off"
+                  rightLabel="Strong"
+                  aria-label="Sharpen"
+                />
+              </div>
+              <label className="flex items-center gap-2 text-sm text-dim">
+                <input
+                  type="checkbox"
+                  checked={runner.config.smoothing}
+                  onChange={(e) => runner.setConfig({ smoothing: e.target.checked })}
+                />
+                Smooth interpolation (off = nearest-neighbour, keeps hard pixel edges)
+              </label>
               <Button variant="primary" className="self-start" onClick={runner.run}>
-                Enhance
+                Enlarge {runner.config.scale}x
               </Button>
             </div>
           ) : null,
           process: (
             <ProcessingState
-              phase={runner.progress?.phase ?? 'Enhancing'}
+              phase={runner.progress?.phase ?? 'Resampling'}
               ratio={runner.progress?.ratio}
               onCancel={runner.cancel}
             >
@@ -118,12 +118,12 @@ export default function ImageUpscale() {
                 {originalUrl && resultUrl && (
                   <BeforeAfterComparison
                     before={<img src={originalUrl} alt="Original" className="size-full object-cover" />}
-                    after={<img src={resultUrl} alt="Enhanced" className="size-full object-cover" />}
+                    after={<img src={resultUrl} alt="Enlarged" className="size-full object-cover" />}
                     beforeLabel={String(runner.result.meta?.from ?? 'Original')}
-                    afterLabel={String(runner.result.meta?.to ?? 'Enhanced')}
+                    afterLabel={String(runner.result.meta?.to ?? 'Enlarged')}
                   />
                 )}
-                <ResultCard result={runner.result} successVerb="Enhancement complete" onReset={runner.reset} />
+                <ResultCard result={runner.result} successVerb="Image enlarged" onReset={runner.reset} />
               </div>
             ) : null,
           error: <ErrorState message={runner.error ?? ''} onRetry={runner.run} />,
