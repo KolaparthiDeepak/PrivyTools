@@ -1,3 +1,134 @@
+import { useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
+import { getTool } from '../tools/registry';
+import { useToolRunner } from '../hooks/useToolRunner';
+import { useHandoff } from '../store/handoff.store';
+import { useRecent } from '../hooks/useRecent';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useObjectUrl } from '../hooks/useObjectUrl';
+import { upscaleImage } from '../services/upscale.service';
+import { ToolHeader } from '../components/tool/ToolHeader';
+import { FileDropzone } from '../components/tool/FileDropzone';
+import { FilePreview } from '../components/tool/FilePreview';
+import { ProcessingState } from '../components/tool/ProcessingState';
+import { ResultCard } from '../components/tool/ResultCard';
+import { ErrorState } from '../components/tool/ErrorState';
+import { StepFlow } from '../components/tool/StepFlow';
+import { BeforeAfterComparison } from '../components/tool/BeforeAfterComparison';
+import ScanBeamAnim from '../components/tool/anims/ScanBeamAnim';
+import { Badge, Button, Segmented, Slider, Tooltip } from '../components/ui';
+
+const tool = getTool('image-upscale')!;
+interface Config {
+  scale: 2 | 4;
+  sharpness: number;
+  noise: number;
+  face: number;
+}
+
 export default function ImageUpscale() {
-  return <main role="main" className="p-8 text-text">Image Upscale</main>;
+  const runner = useToolRunner<Config>(upscaleImage, { scale: 2, sharpness: 0.5, noise: 0.3, face: 0.5 });
+  const consume = useHandoff((s) => s.consume);
+  const { push } = useRecent();
+  const reduced = useReducedMotion();
+  const originalUrl = useObjectUrl(runner.file);
+  const resultUrl = useObjectUrl(runner.result?.blob ?? null);
+
+  useEffect(() => {
+    const f = consume();
+    if (f) runner.selectFile(f);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (runner.step === 'result') push('image-upscale');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runner.step]);
+
+  const disabledSlider = (label: string, value: number) => (
+    <Tooltip content="Available when the AI engine is connected">
+      <div className="pointer-events-none w-full opacity-40">
+        <label className="font-mono text-[10.5px] uppercase tracking-widest text-dim">{label}</label>
+        <Slider min={0} max={1} step={0.1} value={value} onChange={() => {}} aria-label={label} />
+      </div>
+    </Tooltip>
+  );
+
+  return (
+    <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
+      <ToolHeader
+        tool={tool}
+        title="From pixels to clarity."
+        subtitle="Enhance image resolution while preserving important detail."
+      />
+      <Badge tone="warn" className="self-start">
+        Demo - real AI enhancement not yet connected. Preview uses bicubic scaling.
+      </Badge>
+      <StepFlow
+        step={runner.step}
+        views={{
+          select: (
+            <FileDropzone
+              accept={tool.accept}
+              mode={tool.processing}
+              onFile={runner.selectFile}
+              glyph={<Sparkles className="size-8" />}
+              headline="Drop an image to enhance"
+              hint="JPG, PNG or WebP."
+            />
+          ),
+          configure: runner.file ? (
+            <div className="flex flex-col gap-5">
+              <FilePreview file={runner.file} />
+              <div className="flex flex-col gap-2">
+                <label className="font-mono text-[10.5px] uppercase tracking-widest text-dim">Scale</label>
+                <Segmented
+                  aria-label="Scale"
+                  value={String(runner.config.scale)}
+                  onChange={(v) => runner.setConfig({ scale: Number(v) as 2 | 4 })}
+                  options={[
+                    { value: '2', label: '2x' },
+                    { value: '4', label: '4x' },
+                  ]}
+                />
+              </div>
+              {disabledSlider('Sharpness', runner.config.sharpness)}
+              {disabledSlider('Noise reduction', runner.config.noise)}
+              {disabledSlider('Face detail', runner.config.face)}
+              <Button variant="primary" className="self-start" onClick={runner.run}>
+                Enhance
+              </Button>
+            </div>
+          ) : null,
+          process: (
+            <ProcessingState
+              phase={runner.progress?.phase ?? 'Enhancing'}
+              ratio={runner.progress?.ratio}
+              onCancel={runner.cancel}
+            >
+              {runner.file && (
+                <ScanBeamAnim reduced={reduced}>
+                  <FilePreview file={runner.file} className="size-full border-0" />
+                </ScanBeamAnim>
+              )}
+            </ProcessingState>
+          ),
+          result:
+            runner.result && runner.file ? (
+              <div className="flex flex-col gap-5">
+                {originalUrl && resultUrl && (
+                  <BeforeAfterComparison
+                    before={<img src={originalUrl} alt="Original" className="size-full object-cover" />}
+                    after={<img src={resultUrl} alt="Enhanced" className="size-full object-cover" />}
+                    beforeLabel={String(runner.result.meta?.from ?? 'Original')}
+                    afterLabel={String(runner.result.meta?.to ?? 'Enhanced')}
+                  />
+                )}
+                <ResultCard result={runner.result} successVerb="Enhancement complete" onReset={runner.reset} />
+              </div>
+            ) : null,
+          error: <ErrorState message={runner.error ?? ''} onRetry={runner.run} />,
+        }}
+      />
+    </main>
+  );
 }
