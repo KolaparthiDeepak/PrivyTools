@@ -9,6 +9,7 @@ import { MobileNav } from './MobileNav';
 import { CommandPalette } from './CommandPalette';
 import { useCommandPalette } from '../hooks/useCommandPalette';
 import { PrivacyPill } from './PrivacyPill';
+import { DragToAction } from './DragToAction';
 
 export function AppShell() {
   const loc = useLocation();
@@ -51,6 +52,7 @@ export function AppShell() {
       </div>
       <CommandPalette open={palette.open} onOpenChange={palette.setOpen} />
       <PrivacyPill />
+      <DragToAction />
     </ThemeProvider>
   );
 }
