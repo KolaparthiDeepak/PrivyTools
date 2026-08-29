@@ -9,9 +9,10 @@ export default tseslint.config(
   {
     files: ['src/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks },
-    languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+    languageOptions: { ecmaVersion: 2022, sourceType: "module" },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
