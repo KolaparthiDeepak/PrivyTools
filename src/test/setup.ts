@@ -14,3 +14,17 @@ if (typeof localStorage === "undefined") {
   Object.defineProperty(globalThis, "localStorage", { value: new MemStorage(), configurable: true });
   Object.defineProperty(globalThis, "sessionStorage", { value: new MemStorage(), configurable: true });
 }
+
+// jsdom lacks matchMedia
+if (typeof window !== "undefined" && !window.matchMedia) {
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  }) as unknown as MediaQueryList;
+}
