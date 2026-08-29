@@ -14,7 +14,7 @@ import { ResultCard } from '../components/tool/ResultCard';
 import { ErrorState } from '../components/tool/ErrorState';
 import { StepFlow } from '../components/tool/StepFlow';
 import LockAnim from '../components/tool/anims/LockAnim';
-import { Badge, Button, Input, Segmented } from '../components/ui';
+import { Button, Input, Segmented } from '../components/ui';
 
 const tool = getTool('pdf-security')!;
 interface Config {
@@ -44,11 +44,8 @@ export default function PdfSecurity() {
       <ToolHeader
         tool={tool}
         title="Secure your PDF."
-        subtitle="Protect or unlock PDF files without unnecessary uploads."
+        subtitle="Add or remove an AES-256 password. Runs entirely on your device."
       />
-      <Badge tone="warn" className="self-start">
-        Demo - encryption engine not yet connected
-      </Badge>
       <StepFlow
         step={runner.step}
         views={{

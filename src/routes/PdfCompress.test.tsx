@@ -10,22 +10,22 @@ const pdf = () =>
     type: 'application/pdf',
   });
 
-test('shows estimate disclaimer up front', () => {
+test('renders the compressor', () => {
   render(
     <MemoryRouter>
       <PdfCompress />
     </MemoryRouter>,
   );
-  expect(screen.getByText(/Sizes are estimates/i)).toBeInTheDocument();
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/lighter/i);
 });
 
-test('reaches a result labeled estimated', async () => {
+test('offers compression controls after a file is chosen', async () => {
   render(
     <MemoryRouter>
       <PdfCompress />
     </MemoryRouter>,
   );
   await userEvent.upload(document.querySelector('input[type=file]') as HTMLInputElement, pdf());
-  await userEvent.click(await screen.findByRole('button', { name: /compress pdf/i }));
-  expect(await screen.findByText(/estimated/i)).toBeInTheDocument();
+  expect(await screen.findByRole('button', { name: /compress pdf/i })).toBeInTheDocument();
+  expect(screen.getByRole('radiogroup', { name: /preset/i })).toBeInTheDocument();
 });

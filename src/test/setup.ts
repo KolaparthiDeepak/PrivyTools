@@ -30,7 +30,7 @@ if (typeof window !== "undefined" && !window.matchMedia) {
 }
 
 // jsdom lacks ResizeObserver (needed by cmdk)
-if (typeof globalThis.ResizeObserver === "undefined") {
+if (typeof window !== "undefined" && typeof globalThis.ResizeObserver === "undefined") {
   globalThis.ResizeObserver = class {
     observe() {}
     unobserve() {}
@@ -38,6 +38,6 @@ if (typeof globalThis.ResizeObserver === "undefined") {
   } as unknown as typeof ResizeObserver;
 }
 
-if (!Element.prototype.scrollIntoView) {
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }

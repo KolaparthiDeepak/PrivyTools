@@ -1,6 +1,7 @@
 import { PDFDocument } from 'pdf-lib';
 import type { FileResult, Progress, ToolService } from './types';
 import { ToolError } from './types';
+import { loadMuPdf } from './mupdf';
 
 // ponytail: merge runs pdf-lib on the main thread - fast enough for typical inputs
 // and fully testable. src/workers/pdf.worker.ts holds the offload path if profiling demands it.
@@ -44,29 +45,29 @@ export function estimateCompressedPdf(originalBytes: number, quality: number): n
   return Math.round(originalBytes * (floor + (1 - floor) * quality ** 1.5));
 }
 
-const wait = (ms: number, signal: AbortSignal) =>
-  new Promise<void>((res, rej) => {
-    const t = setTimeout(res, ms);
-    signal.addEventListener('abort', () => {
-      clearTimeout(t);
-      rej(new ToolError('Cancelled.'));
-    });
-  });
-
 export const compressPdf: ToolService<{ preset: string; quality: number }, FileResult> = {
-  async process(input, config, onProgress, signal) {
+  async process(input, _config, onProgress, signal) {
     const file = Array.isArray(input) ? input[0] : input;
-    for (const phase of ['Analyzing document', 'Recompressing images', 'Rewriting structure']) {
-      onProgress({ phase });
-      await wait(650, signal);
-    }
+    if (signal.aborted) throw new ToolError('Cancelled.');
+    onProgress({ phase: 'Analyzing document', ratio: 0.15 });
+    const mupdf = await loadMuPdf();
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const doc = mupdf.PDFDocument.openDocument(bytes, 'application/pdf').asPDF()!;
+    onProgress({ phase: 'Recompressing images and fonts', ratio: 0.55 });
+    const out = doc
+      .saveToBuffer('compress=yes,compress-images=yes,compress-fonts=yes,garbage=compact')
+      .asUint8Array();
+    onProgress({ phase: 'Rewriting structure', ratio: 0.9 });
+    const smaller = out.byteLength < file.size;
+    const stem = file.name.replace(/.pdf$/i, '');
     return {
-      blob: file,
-      filename: file.name,
+      blob: smaller ? new Blob([out as BlobPart], { type: 'application/pdf' }) : file,
+      filename: smaller ? `${stem}-optimized.pdf` : file.name,
       originalBytes: file.size,
-      outputBytes: estimateCompressedPdf(file.size, config.quality),
-      demo: true,
-      meta: { estimate: 1 },
+      outputBytes: smaller ? out.byteLength : file.size,
+      meta: smaller
+        ? undefined
+        : { note: 'This PDF is already about as small as lossless optimization gets.' },
     };
   },
 };
@@ -75,14 +76,47 @@ export const protectPdf: ToolService<{ mode: 'add' | 'remove'; password: string 
   async process(input, config, onProgress, signal) {
     const file = Array.isArray(input) ? input[0] : input;
     if (!config.password) throw new ToolError('Enter a password first.');
-    const phases =
-      config.mode === 'add'
-        ? ['Preparing document', 'Encrypting', 'Sealing']
-        : ['Reading document', 'Validating password', 'Unlocking'];
-    for (const phase of phases) {
-      onProgress({ phase });
-      await wait(600, signal);
+    if (/[,=]/.test(config.password))
+      throw new ToolError('The password cannot contain a comma or an equals sign.');
+    if (signal.aborted) throw new ToolError('Cancelled.');
+
+    onProgress({
+      phase: config.mode === 'add' ? 'Preparing document' : 'Reading document',
+      ratio: 0.2,
+    });
+    const mupdf = await loadMuPdf();
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const doc = mupdf.PDFDocument.openDocument(bytes, 'application/pdf').asPDF()!;
+    const stem = file.name.replace(/.pdf$/i, '');
+
+    if (config.mode === 'remove') {
+      onProgress({ phase: 'Validating password', ratio: 0.5 });
+      if (doc.needsPassword() && !doc.authenticatePassword(config.password))
+        throw new ToolError('That password did not unlock the PDF.');
+      onProgress({ phase: 'Unlocking', ratio: 0.85 });
+      const out = doc.saveToBuffer('encrypt=none').asUint8Array();
+      return {
+        blob: new Blob([out as BlobPart], { type: 'application/pdf' }),
+        filename: `${stem}-unlocked.pdf`,
+        originalBytes: file.size,
+        outputBytes: out.byteLength,
+      };
     }
-    return { blob: file, filename: file.name, originalBytes: file.size, demo: true };
+
+    if (doc.needsPassword())
+      throw new ToolError('This PDF is already password protected. Remove the existing password first.');
+    onProgress({ phase: 'Encrypting (AES-256)', ratio: 0.55 });
+    const out = doc
+      .saveToBuffer(
+        `encrypt=aes-256,user-password=${config.password},owner-password=${config.password}`,
+      )
+      .asUint8Array();
+    onProgress({ phase: 'Sealing', ratio: 0.9 });
+    return {
+      blob: new Blob([out as BlobPart], { type: 'application/pdf' }),
+      filename: `${stem}-protected.pdf`,
+      originalBytes: file.size,
+      outputBytes: out.byteLength,
+    };
   },
 };

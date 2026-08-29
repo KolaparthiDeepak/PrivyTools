@@ -28,12 +28,12 @@ export const TOOLS: Tool[] = [
   {
     id: 'pdf-security', name: 'PDF Security', description: 'Protect or unlock PDFs',
     route: '/pdf/security', category: 'pdf', icon: ShieldCheck,
-    processing: 'local-partial', status: 'demo', accept: PDF,
+    processing: 'local', status: 'live', accept: PDF,
   },
   {
     id: 'pdf-compress', name: 'Compress PDF', description: 'Reduce file size, keep it readable',
     route: '/pdf/compress', category: 'pdf', icon: Minimize2,
-    processing: 'local-partial', status: 'demo', accept: PDF,
+    processing: 'local', status: 'live', accept: PDF,
   },
   {
     id: 'pdf-merge', name: 'Merge PDF', description: 'Combine documents into one',

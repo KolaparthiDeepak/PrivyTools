@@ -10,13 +10,13 @@ const pdf = () =>
     type: 'application/pdf',
   });
 
-test('shows a demo disclaimer', () => {
+test('states AES-256, on-device', () => {
   render(
     <MemoryRouter>
       <PdfSecurity />
     </MemoryRouter>,
   );
-  expect(screen.getByText(/Demo - encryption engine/i)).toBeInTheDocument();
+  expect(screen.getByText(/AES-256/i)).toBeInTheDocument();
 });
 
 test('empty password shows a friendly error', async () => {

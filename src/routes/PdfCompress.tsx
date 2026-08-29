@@ -15,7 +15,7 @@ import { ResultCard } from '../components/tool/ResultCard';
 import { ErrorState } from '../components/tool/ErrorState';
 import { StepFlow } from '../components/tool/StepFlow';
 import ShrinkBarsAnim from '../components/tool/anims/ShrinkBarsAnim';
-import { Badge, Button, Segmented, Slider } from '../components/ui';
+import { Button, Segmented, Slider } from '../components/ui';
 
 const tool = getTool('pdf-compress')!;
 type Preset = 'max' | 'balanced' | 'high';
@@ -50,9 +50,6 @@ export default function PdfCompress() {
         title="Make PDFs lighter."
         subtitle="Reduce file size while keeping documents readable."
       />
-      <Badge tone="warn" className="self-start">
-        Demo - compression engine not yet connected. Sizes are estimates.
-      </Badge>
       <StepFlow
         step={runner.step}
         views={{
@@ -74,7 +71,7 @@ export default function PdfCompress() {
                 </div>
                 <span className="text-dim/60">\u2192</span>
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-widest text-dim/70">Estimated</span>
+                  <span className="text-[10px] uppercase tracking-widest text-dim/70">Projected</span>
                   <span className="text-lg text-text">\u2248 {formatBytes(est)}</span>
                   <span className="text-xs text-accent">{formatPercent(runner.file.size, est)}</span>
                 </div>
@@ -114,7 +111,7 @@ export default function PdfCompress() {
             </ProcessingState>
           ),
           result: runner.result ? (
-            <ResultCard result={runner.result} successVerb="Estimate ready" onReset={runner.reset} />
+            <ResultCard result={runner.result} successVerb="PDF optimized" onReset={runner.reset} />
           ) : null,
           error: <ErrorState message={runner.error ?? ''} onRetry={runner.run} />,
         }}
