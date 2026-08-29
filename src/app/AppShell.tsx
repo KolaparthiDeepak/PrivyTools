@@ -6,10 +6,13 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { MobileNav } from './MobileNav';
+import { CommandPalette } from './CommandPalette';
+import { useCommandPalette } from '../hooks/useCommandPalette';
 
 export function AppShell() {
   const loc = useLocation();
   const reduced = useReducedMotion();
+  const palette = useCommandPalette();
   return (
     <ThemeProvider>
       <a
@@ -24,7 +27,7 @@ export function AppShell() {
         </aside>
         <div className="flex min-w-0 flex-col">
           <header className="h-14 shrink-0 border-b border-border">
-            <Topbar onOpenPalette={() => {}} />
+            <Topbar onOpenPalette={() => palette.setOpen(true)} />
           </header>
           <div id="content" className="min-h-0 flex-1 overflow-auto">
             <AnimatePresence mode="wait">
@@ -45,6 +48,7 @@ export function AppShell() {
           </nav>
         </div>
       </div>
+      <CommandPalette open={palette.open} onOpenChange={palette.setOpen} />
     </ThemeProvider>
   );
 }
