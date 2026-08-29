@@ -1,7 +1,6 @@
 import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES, TOOLS, type Category } from '../tools/registry';
-import { usePrefs } from '../store/prefs.store';
 
 const GROUP_ORDER: Category[] = ['pdf', 'image', 'ai', 'privacy'];
 
@@ -13,10 +12,8 @@ export function CommandPalette({
   onOpenChange: (o: boolean) => void;
 }) {
   const navigate = useNavigate();
-  const pushRecent = usePrefs((s) => s.pushRecent);
 
-  const go = (route: string, id: string) => {
-    pushRecent(id);
+  const go = (route: string) => {
     onOpenChange(false);
     navigate(route);
   };
@@ -51,7 +48,7 @@ export function CommandPalette({
                   <Command.Item
                     key={t.id}
                     value={`${t.name} ${t.description}`}
-                    onSelect={() => go(t.route, t.id)}
+                    onSelect={() => go(t.route)}
                     className="flex items-center gap-2.5 rounded px-2.5 py-2 text-[13px] text-dim data-[selected=true]:bg-surface-hi data-[selected=true]:text-text"
                   >
                     <t.icon className="size-3.5" />

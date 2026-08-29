@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
-import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useObjectUrl } from '../hooks/useObjectUrl';
 import { compressImage, estimateCompressedImage } from '../services/image.service';
@@ -28,7 +27,6 @@ interface Config {
 export default function ImageCompress() {
   const runner = useToolRunner<Config>(compressImage, { quality: 0.7, format: 'image/jpeg' });
   const consume = useHandoff((s) => s.consume);
-  const { push } = useRecent();
   const reduced = useReducedMotion();
   const originalUrl = useObjectUrl(runner.file);
   const resultUrl = useObjectUrl(runner.result?.blob ?? null);
@@ -38,11 +36,6 @@ export default function ImageCompress() {
     if (f) runner.selectFile(f);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    if (runner.step === 'result') push('image-compress');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runner.step]);
-
   const est = runner.file
     ? estimateCompressedImage(runner.file.size, runner.config.quality, runner.config.format)
     : 0;

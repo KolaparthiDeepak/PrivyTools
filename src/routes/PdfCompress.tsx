@@ -3,7 +3,6 @@ import { Minimize2 } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
-import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { compressPdf, estimateCompressedPdf } from '../services/pdf.service';
 import { formatBytes } from '../lib/formatBytes';
@@ -28,7 +27,6 @@ interface Config {
 export default function PdfCompress() {
   const runner = useToolRunner<Config>(compressPdf, { preset: 'balanced', quality: 0.6 });
   const consume = useHandoff((s) => s.consume);
-  const { push } = useRecent();
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -36,11 +34,6 @@ export default function PdfCompress() {
     if (f) runner.selectFile(f);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    if (runner.step === 'result') push('pdf-compress');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runner.step]);
-
   const est = runner.file ? estimateCompressedPdf(runner.file.size, runner.config.quality) : 0;
 
   return (

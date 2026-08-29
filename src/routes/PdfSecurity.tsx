@@ -3,7 +3,6 @@ import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
-import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { protectPdf } from '../services/pdf.service';
 import { ToolHeader } from '../components/tool/ToolHeader';
@@ -25,7 +24,6 @@ interface Config {
 export default function PdfSecurity() {
   const runner = useToolRunner<Config>(protectPdf, { mode: 'add', password: '' });
   const consume = useHandoff((s) => s.consume);
-  const { push } = useRecent();
   const reduced = useReducedMotion();
   const [show, setShow] = useState(false);
 
@@ -34,11 +32,6 @@ export default function PdfSecurity() {
     if (f) runner.selectFile(f);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    if (runner.step === 'result') push('pdf-security');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runner.step]);
-
   return (
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Star, Clock, PanelLeftClose, PanelLeftOpen, Shield } from 'lucide-react';
+import { Home, Star, PanelLeftClose, PanelLeftOpen, Shield } from 'lucide-react';
 import { TOOLS, getTool, toolsByCategory } from '../tools/registry';
 import { usePrefs } from '../store/prefs.store';
 import { cn } from '../lib/cn';
@@ -34,7 +34,6 @@ export function Sidebar() {
   const collapsed = usePrefs((s) => s.sidebarCollapsed);
   const toggle = usePrefs((s) => s.toggleSidebar);
   const favorites = usePrefs((s) => s.favorites);
-  const recent = usePrefs((s) => s.recent);
 
   return (
     <div className={cn('flex h-full flex-col gap-5', collapsed ? 'items-center p-2' : 'p-3.5')}>
@@ -90,18 +89,6 @@ export function Sidebar() {
         </nav>
       )}
 
-      {recent.length > 0 && (
-        <nav className="mt-auto flex flex-col gap-0.5">
-          {!collapsed && (
-            <span className="flex items-center gap-1.5 px-2.5 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-dim/70">
-              <Clock className="size-3" /> Recent
-            </span>
-          )}
-          {recent.map((id) => getTool(id)).filter(Boolean).map((t) => (
-            <Item key={t!.id} to={t!.route} label={t!.name} Icon={t!.icon} collapsed={collapsed} />
-          ))}
-        </nav>
-      )}
 
       <p className="sr-only">{TOOLS.length} tools available</p>
     </div>

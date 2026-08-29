@@ -3,7 +3,6 @@ import { Maximize2 } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
-import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useObjectUrl } from '../hooks/useObjectUrl';
 import { upscaleImage, type ResizeConfig } from '../services/upscale.service';
@@ -23,7 +22,6 @@ const tool = getTool('image-upscale')!;
 export default function ImageUpscale() {
   const runner = useToolRunner<ResizeConfig>(upscaleImage, { scale: 2, sharpen: 0.4, smoothing: true });
   const consume = useHandoff((s) => s.consume);
-  const { push } = useRecent();
   const reduced = useReducedMotion();
   const originalUrl = useObjectUrl(runner.file);
   const resultUrl = useObjectUrl(runner.result?.blob ?? null);
@@ -33,11 +31,6 @@ export default function ImageUpscale() {
     if (f) runner.selectFile(f);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    if (runner.step === 'result') push('image-upscale');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runner.step]);
-
   return (
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader

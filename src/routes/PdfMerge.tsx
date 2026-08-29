@@ -3,7 +3,6 @@ import { Combine } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
-import { useRecent } from '../hooks/useRecent';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { mergePdf } from '../services/pdf.service';
 import { ToolHeader } from '../components/tool/ToolHeader';
@@ -21,7 +20,6 @@ const tool = getTool('pdf-merge')!;
 export default function PdfMerge() {
   const runner = useToolRunner<Record<string, never>>(mergePdf, {});
   const consume = useHandoff((s) => s.consume);
-  const { push } = useRecent();
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -29,11 +27,6 @@ export default function PdfMerge() {
     if (f) runner.selectFile([f]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (runner.step === 'result') push('pdf-merge');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [runner.step]);
 
   return (
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
