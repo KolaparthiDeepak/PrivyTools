@@ -8,6 +8,7 @@ import { Topbar } from './Topbar';
 import { MobileNav } from './MobileNav';
 import { CommandPalette } from './CommandPalette';
 import { useCommandPalette } from '../hooks/useCommandPalette';
+import { PrivacyPill } from './PrivacyPill';
 
 export function AppShell() {
   const loc = useLocation();
@@ -49,6 +50,7 @@ export function AppShell() {
         </div>
       </div>
       <CommandPalette open={palette.open} onOpenChange={palette.setOpen} />
+      <PrivacyPill />
     </ThemeProvider>
   );
 }
