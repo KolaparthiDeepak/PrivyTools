@@ -52,7 +52,7 @@ export function ResultCard({
         <div className="flex flex-wrap justify-center gap-2 font-mono text-[11px] text-dim">
           {chips.map(([k, v]) => (
             <span key={k} className="rounded-full border border-border px-2 py-0.5">
-              {v}
+              {k === "pages" || k === "documents" ? `${v} ${k}` : String(v)}
             </span>
           ))}
         </div>
