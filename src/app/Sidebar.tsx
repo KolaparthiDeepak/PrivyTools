@@ -17,8 +17,8 @@ function Item({ to, label, Icon, collapsed }: { to: string; label: string; Icon:
       end={to === '/'}
       className={({ isActive }) =>
         cn(
-          'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[13.5px] text-dim',
-          'hover:text-text',
+          'flex items-center rounded-md text-[13.5px] text-dim hover:text-text',
+          collapsed ? 'size-10 justify-center' : 'gap-2.5 px-2.5 py-2',
           isActive && 'bg-surface-hi text-text shadow-[inset_0_0_0_1px_var(--border)]',
         )
       }
@@ -37,8 +37,13 @@ export function Sidebar() {
   const recent = usePrefs((s) => s.recent);
 
   return (
-    <div className="flex h-full flex-col gap-5 p-3.5">
-      <div className="flex items-center justify-between px-1.5">
+    <div className={cn('flex h-full flex-col gap-5', collapsed ? 'items-center p-2' : 'p-3.5')}>
+      <div
+        className={cn(
+          'flex items-center',
+          collapsed ? 'flex-col gap-2' : 'justify-between px-1.5',
+        )}
+      >
         <div className="flex items-center gap-2.5 font-semibold">
           <span className="grid size-6 place-items-center rounded-md border border-border-hi bg-raise text-accent">
             <Shield className="size-3.5" />

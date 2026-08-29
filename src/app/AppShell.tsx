@@ -10,11 +10,14 @@ import { CommandPalette } from './CommandPalette';
 import { useCommandPalette } from '../hooks/useCommandPalette';
 import { PrivacyPill } from './PrivacyPill';
 import { DragToAction } from './DragToAction';
+import { usePrefs } from '../store/prefs.store';
+import { cn } from '../lib/cn';
 
 export function AppShell() {
   const loc = useLocation();
   const reduced = useReducedMotion();
   const palette = useCommandPalette();
+  const collapsed = usePrefs((s) => s.sidebarCollapsed);
   return (
     <ThemeProvider>
       <a
@@ -23,7 +26,12 @@ export function AppShell() {
       >
         Skip to content
       </a>
-      <div className="grid h-full grid-cols-1 lg:grid-cols-[240px_1fr]">
+      <div
+        className={cn(
+          'grid h-full grid-cols-1 transition-[grid-template-columns] duration-200 ease-expo',
+          collapsed ? 'lg:grid-cols-[64px_1fr]' : 'lg:grid-cols-[240px_1fr]',
+        )}
+      >
         <aside className="hidden overflow-y-auto border-r border-border lg:block">
           <Sidebar />
         </aside>
