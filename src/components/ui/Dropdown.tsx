@@ -4,11 +4,12 @@ import { cn } from '../../lib/cn';
 interface Props {
   trigger: React.ReactNode;
   children: React.ReactNode;
+  label?: string;
   align?: 'start' | 'end';
   className?: string;
 }
 
-export function Dropdown({ trigger, children, align = 'end', className }: Props) {
+export function Dropdown({ trigger, children, label, align = 'end', className }: Props) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -28,7 +29,7 @@ export function Dropdown({ trigger, children, align = 'end', className }: Props)
   }, [open]);
   return (
     <div ref={root} className="relative">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+      <button type="button" aria-label={label} onClick={() => setOpen((o) => !o)} aria-expanded={open}>
         {trigger}
       </button>
       {open && (

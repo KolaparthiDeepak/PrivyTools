@@ -26,6 +26,7 @@ export function Topbar({ onOpenPalette }: { onOpenPalette: () => void }) {
       </button>
       <div className="ml-auto flex items-center gap-2">
         <Dropdown
+          label="Theme"
           trigger={
             <span className="grid size-9 place-items-center rounded-md border border-border bg-surface-hi text-dim">
               <Active className="size-4" />
