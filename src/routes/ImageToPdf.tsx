@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { Combine } from 'lucide-react';
 import { getTool } from '../tools/registry';
 import { useToolRunner } from '../hooks/useToolRunner';
 import { useHandoff } from '../store/handoff.store';
 import { useReducedMotion } from '../hooks/useReducedMotion';
-import { mergePdf } from '../services/pdf.service';
+import { imagesToPdf } from '../services/pdf.service';
 import { ToolHeader } from '../components/tool/ToolHeader';
 import { FileDropzone } from '../components/tool/FileDropzone';
 import { MergeList } from '../components/tool/MergeList';
@@ -15,10 +14,10 @@ import { StepFlow } from '../components/tool/StepFlow';
 import StackAnim from '../components/tool/anims/StackAnim';
 import { Button } from '../components/ui';
 
-const tool = getTool('pdf-merge')!;
+const tool = getTool('image-to-pdf')!;
 
-export default function PdfMerge() {
-  const runner = useToolRunner<Record<string, never>>(mergePdf, {});
+export default function ImageToPdf() {
+  const runner = useToolRunner<Record<string, never>>(imagesToPdf, {});
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
 
@@ -30,7 +29,11 @@ export default function PdfMerge() {
 
   return (
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
-      <ToolHeader tool={tool} title="Bring documents together." subtitle="Combine PDFs into one, in any order." />
+      <ToolHeader
+        tool={tool}
+        title="Turn images into a PDF."
+        subtitle="Combine JPGs and PNGs into one document, in any order."
+      />
       <StepFlow
         step={runner.step}
         views={{
@@ -40,8 +43,8 @@ export default function PdfMerge() {
               multiple
               mode={tool.processing}
               onFile={runner.selectFile}
-              headline="Drop your PDFs here"
-              hint="Add two or more PDF files to merge."
+              headline="Drop your images here"
+              hint="JPG or PNG. Add as many as you like."
             />
           ),
           configure: (
@@ -52,22 +55,17 @@ export default function PdfMerge() {
                 onRemove={(i) => runner.selectFile(runner.files.filter((_, x) => x !== i))}
                 onAdd={(f) => runner.selectFile([...runner.files, ...f])}
                 accept={tool.accept}
-                itemLabel="PDF"
-                countLabel="documents"
+                itemLabel="IMG"
+                countLabel="images"
               />
-              <Button
-                variant="primary"
-                className="self-start"
-                disabled={runner.files.length < 2}
-                onClick={runner.run}
-              >
-                <Combine className="size-4" /> Merge PDFs
+              <Button variant="primary" className="self-start" onClick={runner.run}>
+                Create PDF
               </Button>
             </div>
           ),
           process: (
             <ProcessingState
-              phase={runner.progress?.phase ?? 'Merging'}
+              phase={runner.progress?.phase ?? 'Building PDF'}
               ratio={runner.progress?.ratio}
               onCancel={runner.cancel}
             >
@@ -75,7 +73,7 @@ export default function PdfMerge() {
             </ProcessingState>
           ),
           result: runner.result ? (
-            <ResultCard result={runner.result} successVerb="PDFs merged" onReset={runner.reset} />
+            <ResultCard result={runner.result} successVerb="PDF created" onReset={runner.reset} />
           ) : null,
           error: <ErrorState message={runner.error ?? ''} onRetry={runner.run} />,
         }}

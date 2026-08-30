@@ -11,8 +11,10 @@ const Dashboard = lazy(() => import('../routes/Dashboard'));
 const PdfSecurity = lazy(() => import('../routes/PdfSecurity'));
 const PdfCompress = lazy(() => import('../routes/PdfCompress'));
 const PdfMerge = lazy(() => import('../routes/PdfMerge'));
+const PdfToImage = lazy(() => import('../routes/PdfToImage'));
 const ImageCompress = lazy(() => import('../routes/ImageCompress'));
 const ImageUpscale = lazy(() => import('../routes/ImageUpscale'));
+const ImageToPdf = lazy(() => import('../routes/ImageToPdf'));
 const Privacy = lazy(() => import('../routes/Privacy'));
 const DesignSystem = lazy(() => import('../routes/DesignSystem'));
 
@@ -23,8 +25,10 @@ const children: RouteObject[] = [
   { path: 'pdf/security', element: page(<PdfSecurity />) },
   { path: 'pdf/compress', element: page(<PdfCompress />) },
   { path: 'pdf/merge', element: page(<PdfMerge />) },
+  { path: 'pdf/to-image', element: page(<PdfToImage />) },
   { path: 'image/compress', element: page(<ImageCompress />) },
   { path: 'image/upscale', element: page(<ImageUpscale />) },
+  { path: 'image/to-pdf', element: page(<ImageToPdf />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },

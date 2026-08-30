@@ -18,13 +18,19 @@ test('non-privacy tools declare accept types', () => {
   );
 });
 test('every processing tool is live and local', () => {
-  for (const id of ['pdf-security', 'pdf-compress', 'pdf-merge', 'image-compress', 'image-upscale']) {
+  for (const id of [
+    'pdf-security', 'pdf-compress', 'pdf-merge', 'pdf-to-image',
+    'image-compress', 'image-upscale', 'image-to-pdf',
+  ]) {
     expect(getTool(id)!.status).toBe('live');
     expect(getTool(id)!.processing).toBe('local');
   }
 });
 test('exact tool set', () => {
   expect(TOOLS.map((t) => t.id).sort()).toEqual(
-    ['image-compress', 'image-upscale', 'pdf-compress', 'pdf-merge', 'pdf-security', 'privacy-center'].sort(),
+    [
+      'image-compress', 'image-to-pdf', 'image-upscale',
+      'pdf-compress', 'pdf-merge', 'pdf-security', 'pdf-to-image', 'privacy-center',
+    ].sort(),
   );
 });

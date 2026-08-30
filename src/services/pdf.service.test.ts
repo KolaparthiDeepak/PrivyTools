@@ -2,13 +2,17 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PDFDocument } from 'pdf-lib';
-import { mergePdf, estimateCompressedPdf, protectPdf, compressPdf } from './pdf.service';
+import JSZip from 'jszip';
+import { mergePdf, estimateCompressedPdf, protectPdf, compressPdf, imagesToPdf, pdfToImages } from './pdf.service';
 import { loadMuPdf } from './mupdf';
 
 const fx = (name: string) =>
   new File([readFileSync(resolve(__dirname, '../test/fixtures', name))], name, {
     type: 'application/pdf',
   });
+
+const fxImg = (name: string, type: string) =>
+  new File([readFileSync(resolve(__dirname, '../test/fixtures', name))], name, { type });
 
 const sig = () => new AbortController().signal;
 
@@ -64,4 +68,33 @@ test('compress: output is a valid PDF with pages preserved', async () => {
   const doc = await PDFDocument.load(await res.blob.arrayBuffer());
   expect(doc.getPageCount()).toBe(3);
   expect(res.outputBytes).toBeLessThanOrEqual(res.originalBytes);
+});
+
+test('imagesToPdf creates one page per image, sized to the image', async () => {
+  const res = await imagesToPdf.process(
+    [fxImg('sample.jpg', 'image/jpeg'), fxImg('sample.png', 'image/png')],
+    {},
+    () => {},
+    sig(),
+  );
+  const doc = await PDFDocument.load(await res.blob.arrayBuffer());
+  expect(doc.getPageCount()).toBe(2);
+  expect(doc.getPage(0).getSize()).toEqual({ width: 1, height: 1 });
+  expect(res.meta!.pages).toBe(2);
+});
+
+test('imagesToPdf rejects unsupported image types', async () => {
+  await expect(
+    imagesToPdf.process([fxImg('sample.png', 'image/webp')], {}, () => {}, sig()),
+  ).rejects.toMatchObject({ userMessage: expect.stringMatching(/jpg or png/i) });
+});
+
+test('pdfToImages zips one PNG per page at 150 DPI', async () => {
+  const res = await pdfToImages.process(fx('a.pdf'), {}, () => {}, sig());
+  expect(res.meta!.pages).toBe(2);
+  const zip = await JSZip.loadAsync(await res.blob.arrayBuffer());
+  const names = Object.keys(zip.files);
+  expect(names.length).toBe(2);
+  const png = await zip.files[names[0]].async('uint8array');
+  expect(png[0]).toBe(0x89); // PNG signature byte
 });
