@@ -23,9 +23,10 @@ export function CommandPalette({
       open={open}
       onOpenChange={onOpenChange}
       label="Command palette"
-      className="fixed inset-0 z-50 grid place-items-start justify-center bg-black/50 p-4 pt-[12vh] [&_[cmdk-dialog]]:contents"
+      overlayClassName="fixed inset-0 z-50 bg-black/50"
+      contentClassName="fixed left-1/2 top-[12vh] z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2"
     >
-      <div className="w-full max-w-md overflow-hidden rounded-lg border border-border-hi bg-surface shadow-1">
+      <div className="w-full overflow-hidden rounded-lg border border-border-hi bg-surface shadow-1">
         <Command.Input
           placeholder="What do you want to do?"
           className="h-12 w-full border-b border-border bg-transparent px-4 text-sm text-text outline-none placeholder:text-dim"
