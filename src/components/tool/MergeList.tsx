@@ -7,14 +7,20 @@ export function MergeList({
   onReorder,
   onRemove,
   onAdd,
+  accept,
+  itemLabel = 'FILE',
+  countLabel = 'files',
 }: {
   files: File[];
   onReorder: (next: File[]) => void;
   onRemove: (index: number) => void;
   onAdd: (f: File[]) => void;
+  accept: string[];
+  itemLabel?: string;
+  countLabel?: string;
 }) {
   const dz = useDropzone({
-    accept: ['application/pdf'],
+    accept,
     multiple: true,
     onFile: (f) => onAdd(Array.isArray(f) ? f : [f]),
   });
@@ -29,7 +35,7 @@ export function MergeList({
           >
             <GripVertical className="size-3.5 cursor-grab text-dim/60" />
             <span className="font-mono text-[11px] text-accent">
-              PDF {String(i + 1).padStart(2, '0')}
+              {itemLabel} {String(i + 1).padStart(2, '0')}
             </span>
             <span className="flex-1 truncate text-xs text-dim">{file.name}</span>
             <button
@@ -51,7 +57,9 @@ export function MergeList({
         <input {...dz.inputProps} />
         <Plus className="size-3.5" /> Add more
       </button>
-      <p className="font-mono text-[11px] text-dim/70">{files.length} documents</p>
+      <p className="font-mono text-[11px] text-dim/70">
+        {files.length} {countLabel}
+      </p>
     </div>
   );
 }

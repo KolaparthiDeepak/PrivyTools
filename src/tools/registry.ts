@@ -1,5 +1,5 @@
 import {
-  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock,
+  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -41,6 +41,11 @@ export const TOOLS: Tool[] = [
     processing: 'local', status: 'live', accept: PDF,
   },
   {
+    id: 'pdf-to-image', name: 'PDF to Image', description: 'Turn pages into PNGs',
+    route: '/pdf/to-image', category: 'pdf', icon: FileImage,
+    processing: 'local', status: 'live', accept: PDF,
+  },
+  {
     id: 'image-compress', name: 'Compress Image', description: 'Smaller images, same feeling',
     route: '/image/compress', category: 'image', icon: ImageDown,
     processing: 'local', status: 'live', accept: IMG,
@@ -49,6 +54,11 @@ export const TOOLS: Tool[] = [
     id: 'image-upscale', name: 'Upscale Image', description: 'Enlarge and sharpen images',
     route: '/image/upscale', category: 'image', icon: Sparkles,
     processing: 'local', status: 'live', accept: IMG,
+  },
+  {
+    id: 'image-to-pdf', name: 'Image to PDF', description: 'Combine images into one document',
+    route: '/image/to-pdf', category: 'image', icon: Images,
+    processing: 'local', status: 'live', accept: ['image/jpeg', 'image/png'],
   },
   {
     id: 'privacy-center', name: 'Privacy Center', description: 'How your files are handled',
