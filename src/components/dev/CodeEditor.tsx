@@ -28,10 +28,6 @@ export function CodeEditor({
   const cb = useRef(onChange);
   cb.current = onChange;
   const [cmReady, setCmReady] = useState(false);
-  // Local echo: a purely-controlled textarea whose parent doesn't re-render on
-  // every keystroke loses characters (React restores the controlled value).
-  const [local, setLocal] = useState(value);
-  useEffect(() => setLocal(value), [value]);
 
   // Mount CodeMirror in a real browser only. jsdom defines createRange in this
   // repo's vitest setup, so a DOM-API probe alone would let CM try to mount and
@@ -79,17 +75,14 @@ export function CodeEditor({
   return (
     <div className={cn('relative min-h-[40vh] rounded-md border border-border bg-sunken px-3', className)}>
       <label htmlFor={id} className="sr-only">{label}</label>
-      <div ref={host} hidden={!cmReady} className="h-full w-full" />
+      <div ref={host} hidden={!cmReady} aria-label={label} className="h-full w-full" />
       <textarea
         id={id}
         hidden={cmReady}
-        value={local}
+        value={value}
         readOnly={readOnly}
         placeholder={placeholder}
-        onChange={(e) => {
-          setLocal(e.target.value);
-          onChange?.(e.target.value);
-        }}
+        onChange={(e) => onChange?.(e.target.value)}
         spellCheck={false}
         className="h-full min-h-[40vh] w-full resize-none bg-transparent py-3 font-mono text-[13px] text-text outline-none placeholder:text-dim"
       />
