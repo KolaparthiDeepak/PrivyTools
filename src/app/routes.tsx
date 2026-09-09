@@ -25,6 +25,7 @@ const DevBase64 = lazy(() => import('../routes/dev/Base64'));
 const DevUrlEncode = lazy(() => import('../routes/dev/UrlEncode'));
 const DevHtmlEntities = lazy(() => import('../routes/dev/HtmlEntities'));
 const DevQueryJson = lazy(() => import('../routes/dev/QueryJson'));
+const DevSlugify = lazy(() => import('../routes/dev/Slugify'));
 
 const page = (el: React.ReactNode) => <Suspense fallback={<div className="p-8" />}>{el}</Suspense>;
 
@@ -45,6 +46,7 @@ const children: RouteObject[] = [
   { path: 'dev/url', element: page(<DevUrlEncode />) },
   { path: 'dev/html-entities', element: page(<DevHtmlEntities />) },
   { path: 'dev/query-json', element: page(<DevQueryJson />) },
+  { path: 'dev/slug', element: page(<DevSlugify />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },

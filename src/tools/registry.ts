@@ -1,6 +1,6 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
-  Link, Code, Link2, Table, FileType,
+  Link, Code, Link2, Table, FileType, Type,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -105,6 +105,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-json-ts', name: 'JSON → TypeScript', description: 'Infer TypeScript interfaces from a JSON sample',
     route: '/dev/json-ts', category: 'dev', icon: FileType,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-slug', name: 'Slugify', description: 'Make URL-safe slugs from text',
+    route: '/dev/slug', category: 'dev', icon: Type,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];

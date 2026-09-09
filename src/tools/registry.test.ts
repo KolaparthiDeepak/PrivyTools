@@ -35,7 +35,7 @@ test('every processing tool is live and local', () => {
 test('exact tool set', () => {
   expect(TOOLS.map((t) => t.id).sort()).toEqual(
     [
-      'dev-base64', 'dev-html-entities', 'dev-json-csv', 'dev-json-format', 'dev-json-ts', 'dev-json-yaml', 'dev-query-json', 'dev-url',
+      'dev-base64', 'dev-html-entities', 'dev-json-csv', 'dev-json-format', 'dev-json-ts', 'dev-json-yaml', 'dev-query-json', 'dev-slug', 'dev-url',
       'image-compress', 'image-to-pdf', 'image-upscale',
       'pdf-compress', 'pdf-merge', 'pdf-security', 'pdf-to-image', 'privacy-center',
     ].sort(),
