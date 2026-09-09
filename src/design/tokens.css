@@ -21,7 +21,9 @@
   --accent-image: 258 58% 48%;
   --accent-privacy: 150 52% 32%;
   --accent-ai: 270 58% 48%;
+  --accent-dev: 28 80% 45%;
   --accent: var(--accent-pdf);
+  --danger: 0 60% 45%;
 
   --tracking-display: -0.035em;
   --radius-sm: 8px;
@@ -39,6 +41,7 @@
 [data-accent='image']   { --accent: var(--accent-image); }
 [data-accent='privacy'] { --accent: var(--accent-privacy); }
 [data-accent='ai']      { --accent: var(--accent-ai); }
+[data-accent='dev']     { --accent: var(--accent-dev); }
 
 :root[data-mode='dark'] {
   /* ---- DARK · Carbon ---- */
@@ -59,5 +62,7 @@
   --accent-image: 258 85% 68%;
   --accent-privacy: 150 55% 55%;
   --accent-ai: 270 80% 70%;
+  --accent-dev: 32 90% 62%;
+  --danger: 0 65% 62%;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 40px rgba(0, 0, 0, 0.35);
 }

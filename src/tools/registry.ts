@@ -18,6 +18,7 @@ export interface Tool {
   shortcut?: string;
   processing: ProcessingMode;
   status: 'live' | 'demo';
+  kind?: 'file' | 'text';
   accept: string[];
 }
 

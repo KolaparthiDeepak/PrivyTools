@@ -12,10 +12,16 @@ test('routes absolute + unique', () => {
 test('categories resolve', () => {
   TOOLS.forEach((t) => expect(CATEGORIES[t.category]).toBeDefined());
 });
-test('non-privacy tools declare accept types', () => {
-  TOOLS.filter((t) => t.id !== 'privacy-center').forEach((t) =>
+test('file tools declare accept types', () => {
+  TOOLS.filter((t) => (t.kind ?? 'file') === 'file' && t.id !== 'privacy-center').forEach((t) =>
     expect(t.accept.length).toBeGreaterThan(0),
   );
+});
+test('text tools carry kind and empty accept', () => {
+  TOOLS.filter((t) => t.kind === 'text').forEach((t) => {
+    expect(t.category).toBe('dev');
+    expect(t.accept).toEqual([]);
+  });
 });
 test('every processing tool is live and local', () => {
   for (const id of [
