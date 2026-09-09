@@ -1,6 +1,6 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
-  Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock,
+  Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock, KeyRound,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -125,6 +125,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-cron', name: 'Cron Explainer', description: 'Read a cron expression in plain English',
     route: '/dev/cron', category: 'dev', icon: CalendarClock,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-jwt', name: 'JWT Decoder', description: 'Inspect a JWT without verifying it',
+    route: '/dev/jwt', category: 'dev', icon: KeyRound,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];

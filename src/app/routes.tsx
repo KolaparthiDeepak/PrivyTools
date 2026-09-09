@@ -29,6 +29,7 @@ const DevSlugify = lazy(() => import('../routes/dev/Slugify'));
 const DevCaseConvert = lazy(() => import('../routes/dev/CaseConvert'));
 const DevTimestamp = lazy(() => import('../routes/dev/Timestamp'));
 const DevCron = lazy(() => import('../routes/dev/Cron'));
+const DevJwt = lazy(() => import('../routes/dev/Jwt'));
 
 const page = (el: React.ReactNode) => <Suspense fallback={<div className="p-8" />}>{el}</Suspense>;
 
@@ -53,6 +54,7 @@ const children: RouteObject[] = [
   { path: 'dev/case', element: page(<DevCaseConvert />) },
   { path: 'dev/timestamp', element: page(<DevTimestamp />) },
   { path: 'dev/cron', element: page(<DevCron />) },
+  { path: 'dev/jwt', element: page(<DevJwt />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },
