@@ -15,3 +15,15 @@ test('rejects non-array json', () => {
 test('rejects bad json', () => {
   expect(() => jsonToCsv('[bad')).toThrow(/Invalid JSON/);
 });
+
+test('rejects an array of non-objects', () => {
+  expect(() => jsonToCsv('[1,2,3]')).toThrow(/array of objects/);
+});
+
+test('nested values are JSON-stringified into the cell', () => {
+  expect(jsonToCsv('[{"a":{"b":1}}]')).toBe('a\r\n"{""b"":1}"');
+});
+
+test('reports a CSV parse failure', () => {
+  expect(() => csvToJson('a,b\r\n1')).toThrow(/Could not parse CSV/);
+});
