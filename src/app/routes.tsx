@@ -18,6 +18,7 @@ const ImageToPdf = lazy(() => import('../routes/ImageToPdf'));
 const Privacy = lazy(() => import('../routes/Privacy'));
 const DesignSystem = lazy(() => import('../routes/DesignSystem'));
 const DevJsonFormat = lazy(() => import('../routes/dev/JsonFormat'));
+const DevJsonYaml = lazy(() => import('../routes/dev/JsonYaml'));
 
 const page = (el: React.ReactNode) => <Suspense fallback={<div className="p-8" />}>{el}</Suspense>;
 
@@ -31,6 +32,7 @@ const children: RouteObject[] = [
   { path: 'image/upscale', element: page(<ImageUpscale />) },
   { path: 'image/to-pdf', element: page(<ImageToPdf />) },
   { path: 'dev/json-format', element: page(<DevJsonFormat />) },
+  { path: 'dev/json-yaml', element: page(<DevJsonYaml />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },

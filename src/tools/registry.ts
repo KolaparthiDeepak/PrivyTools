@@ -1,5 +1,5 @@
 import {
-  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces,
+  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -69,6 +69,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-json-format', name: 'JSON Formatter', description: 'Prettify or minify JSON',
     route: '/dev/json-format', category: 'dev', icon: Braces,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-yaml', name: 'JSON ⇄ YAML', description: 'Convert between JSON and YAML',
+    route: '/dev/json-yaml', category: 'dev', icon: FileJson2,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
