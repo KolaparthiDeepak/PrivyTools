@@ -51,9 +51,20 @@ conversion via `useDevTransform`, CodeMirror 6 editor lazy-loaded per route.
 | Query String &lt;-&gt; JSON | `/dev/query-json` | native - `URLSearchParams` |
 | JSON &lt;-&gt; CSV | `/dev/json-csv` | papaparse |
 | JSON -&gt; TypeScript | `/dev/json-ts` | native - single-sample interface inference |
+| Case Converter | `/dev/case` | native - camel / snake / kebab / CONSTANT / Title / sentence |
+| Slugify | `/dev/slug` | native - URL-safe slug, diacritics stripped |
+| Timestamp Converter | `/dev/timestamp` | native - Unix epoch (s/ms) &lt;-&gt; ISO / UTC / relative |
+| Cron Explainer | `/dev/cron` | cronstrue + cron-parser - plain English + next 5 runs (UTC) |
+| JWT Decoder | `/dev/jwt` | native - header / payload / claims; signature NOT verified |
+| Text Diff | `/dev/diff` | diff (jsdiff) - line-by-line |
+| Sort / Dedupe Lines | `/dev/lines` | native - sort, unique, trim, filter, reverse |
+
+JWT/Timestamp/Cron use the `FieldTool` layout (input -&gt; labelled result rows);
+Diff and Lines have bespoke layouts.
 
 The heavy wasm/engine for each tool is lazy-loaded only when you open that
-route (MuPDF wasm is ~10MB; the CodeMirror editor chunk is ~105KB gzipped).
+route (MuPDF wasm is ~10MB; the CodeMirror editor chunk is ~105KB gzipped;
+cron parsing ~36KB gzipped).
 
 ## Privacy
 

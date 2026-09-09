@@ -41,3 +41,13 @@ test('exact tool set', () => {
     ].sort(),
   );
 });
+test('all 15 dev tools are text kind, live, local, and route under /dev', () => {
+  const dev = TOOLS.filter((t) => t.category === 'dev');
+  expect(dev.length).toBe(15);
+  for (const t of dev) {
+    expect(t.kind).toBe('text');
+    expect(t.status).toBe('live');
+    expect(t.processing).toBe('local');
+    expect(t.route.startsWith('/dev/')).toBe(true);
+  }
+});
