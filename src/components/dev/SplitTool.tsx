@@ -38,10 +38,7 @@ export function SplitTool({
   const [copied, setCopied] = useState(false);
 
   const { output, error, pending } = useDevTransform(dir.transform, input);
-  // Keep the last good result so the output pane survives transient errors.
-  const [lastOutput, setLastOutput] = useState('');
-  if (output != null && output !== lastOutput) setLastOutput(output);
-  const outStr = output ?? lastOutput;
+  const outStr = output ?? '';
 
   const swap = useCallback(() => {
     if (directions.length !== 2) return;

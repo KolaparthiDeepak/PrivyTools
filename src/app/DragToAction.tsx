@@ -61,6 +61,7 @@ export function DragToAction() {
 
   const matches = TOOLS.filter((t) => {
     if (t.id === 'privacy-center') return false;
+    if ((t.kind ?? 'file') !== 'file') return false;
     if (!dragType) return true;
     return isAccepted({ type: dragType, name: '' }, t.accept);
   });

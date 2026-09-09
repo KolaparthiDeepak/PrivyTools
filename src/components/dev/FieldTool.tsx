@@ -23,7 +23,11 @@ function Row({ row }: { row: FieldRow }) {
         aria-label={`Copy ${row.label}`}
         className="text-dim hover:text-text"
         onClick={async () => {
-          await navigator.clipboard.writeText(row.value);
+          try {
+            await navigator.clipboard.writeText(row.value);
+          } catch {
+            return;
+          }
           setCopied(true);
           setTimeout(() => setCopied(false), 1400);
         }}
@@ -37,11 +41,7 @@ function Row({ row }: { row: FieldRow }) {
 export function FieldTool({ compute, inputLabel, placeholder, multiline = false }: FieldToolProps) {
   const [input, setInput] = useState('');
   const { output, error } = useDevTransform(compute, input);
-  // Keep the last good rows so they survive a transient error (useDevTransform
-  // drops its own lastGood ref when the input is cleared).
-  const [lastRows, setLastRows] = useState<FieldRow[]>([]);
-  if (output != null && output !== lastRows) setLastRows(output);
-  const rows = output ?? (error ? lastRows : []);
+  const rows = output ?? [];
 
   return (
     <div className="flex flex-col gap-4">

@@ -17,7 +17,6 @@ export function useDevTransform<T>(
 
   useEffect(() => {
     if (input.trim() === '') {
-      lastGood.current = null;
       setState({ output: null, error: null, pending: false });
       return;
     }

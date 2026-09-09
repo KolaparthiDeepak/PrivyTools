@@ -17,6 +17,7 @@ export function createEditor(opts: {
   language: EditorLanguage;
   readOnly: boolean;
   placeholderText?: string;
+  label: string;
   onChange: (v: string) => void;
 }): EditorView {
   const state = EditorState.create({
@@ -30,6 +31,7 @@ export function createEditor(opts: {
       keymap.of([...defaultKeymap, ...historyKeymap]),
       EditorView.editable.of(!opts.readOnly),
       EditorState.readOnly.of(opts.readOnly),
+      EditorView.contentAttributes.of({ 'aria-label': opts.label }),
       EditorView.theme({
         '&': { fontFamily: 'var(--font-mono, monospace)', fontSize: '13px', backgroundColor: 'transparent' },
         '.cm-content': { padding: '12px 0' },

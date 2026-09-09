@@ -47,6 +47,7 @@ export function CodeEditor({
           language,
           readOnly,
           placeholderText: placeholder,
+          label,
           onChange: (v) => cb.current?.(v),
         });
         setCmReady(true);
