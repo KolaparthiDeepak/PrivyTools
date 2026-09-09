@@ -2,7 +2,7 @@ import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORIES, TOOLS, type Category } from '../tools/registry';
 
-const GROUP_ORDER: Category[] = ['pdf', 'image', 'ai', 'privacy'];
+const GROUP_ORDER: Category[] = ['pdf', 'image', 'ai', 'dev', 'privacy'];
 
 export function CommandPalette({
   open,
