@@ -1,6 +1,6 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
-  Link, Code, Link2,
+  Link, Code, Link2, Table, FileType,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -95,6 +95,16 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-query-json', name: 'Query String ⇄ JSON', description: 'Parse or build URL query strings',
     route: '/dev/query-json', category: 'dev', icon: Link2,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-csv', name: 'JSON ⇄ CSV', description: 'Convert a JSON array to CSV and back',
+    route: '/dev/json-csv', category: 'dev', icon: Table,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-ts', name: 'JSON → TypeScript', description: 'Infer TypeScript interfaces from a JSON sample',
+    route: '/dev/json-ts', category: 'dev', icon: FileType,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];

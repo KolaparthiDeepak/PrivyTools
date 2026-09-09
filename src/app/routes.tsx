@@ -19,6 +19,8 @@ const Privacy = lazy(() => import('../routes/Privacy'));
 const DesignSystem = lazy(() => import('../routes/DesignSystem'));
 const DevJsonFormat = lazy(() => import('../routes/dev/JsonFormat'));
 const DevJsonYaml = lazy(() => import('../routes/dev/JsonYaml'));
+const DevJsonCsv = lazy(() => import('../routes/dev/JsonCsv'));
+const DevJsonTs = lazy(() => import('../routes/dev/JsonTs'));
 const DevBase64 = lazy(() => import('../routes/dev/Base64'));
 const DevUrlEncode = lazy(() => import('../routes/dev/UrlEncode'));
 const DevHtmlEntities = lazy(() => import('../routes/dev/HtmlEntities'));
@@ -37,6 +39,8 @@ const children: RouteObject[] = [
   { path: 'image/to-pdf', element: page(<ImageToPdf />) },
   { path: 'dev/json-format', element: page(<DevJsonFormat />) },
   { path: 'dev/json-yaml', element: page(<DevJsonYaml />) },
+  { path: 'dev/json-csv', element: page(<DevJsonCsv />) },
+  { path: 'dev/json-ts', element: page(<DevJsonTs />) },
   { path: 'dev/base64', element: page(<DevBase64 />) },
   { path: 'dev/url', element: page(<DevUrlEncode />) },
   { path: 'dev/html-entities', element: page(<DevHtmlEntities />) },
