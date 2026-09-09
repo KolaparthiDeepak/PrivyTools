@@ -26,7 +26,12 @@ export function decodeJwt(token: string): DecodedJwt {
   if (payload && typeof payload === 'object') {
     for (const [key, label] of Object.entries(CLAIM_LABELS)) {
       const v = (payload as Record<string, unknown>)[key];
-      if (typeof v === 'number') claims.push({ label, value: new Date(v * 1000).toISOString() });
+      if (typeof v !== 'number') continue;
+      const date = new Date(v * 1000);
+      claims.push({
+        label,
+        value: Number.isNaN(date.getTime()) ? `${v} (out of range)` : date.toISOString(),
+      });
     }
   }
   return { header, payload, signature: parts[2], claims };

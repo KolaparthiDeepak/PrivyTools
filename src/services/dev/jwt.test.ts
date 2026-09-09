@@ -43,3 +43,18 @@ test('rejects bad base64 json (payload)', () => {
     /JWT payload is not valid Base64URL JSON/,
   );
 });
+
+test('rejects valid base64 that is not JSON', () => {
+  // header {"alg":"none"} ; payload = base64url("not json at all")
+  expect(() => decodeJwt('eyJhbGciOiJub25lIn0.bm90IGpzb24gYXQgYWxs.s')).toThrow(
+    /JWT payload is not valid Base64URL JSON/,
+  );
+});
+
+test('does not crash on an out-of-range exp', () => {
+  // header {"alg":"none"} ; payload {"exp":1e+21}
+  const claim = decodeJwt('eyJhbGciOiJub25lIn0.eyJleHAiOjFlKzIxfQ.s').claims.find(
+    (c) => c.label === 'Expires',
+  );
+  expect(claim?.value).toMatch(/out of range/);
+});
