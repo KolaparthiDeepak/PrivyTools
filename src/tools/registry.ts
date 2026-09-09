@@ -1,7 +1,7 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
   Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock, KeyRound,
-  GitCompareArrows,
+  GitCompareArrows, ArrowDownUp,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -136,6 +136,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-diff', name: 'Text Diff', description: 'Line-by-line comparison of two texts',
     route: '/dev/diff', category: 'dev', icon: GitCompareArrows,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-lines', name: 'Sort / Dedupe Lines', description: 'Sort, dedupe, and clean up a list',
+    route: '/dev/lines', category: 'dev', icon: ArrowDownUp,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
