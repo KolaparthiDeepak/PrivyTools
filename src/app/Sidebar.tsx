@@ -7,6 +7,7 @@ import { cn } from '../lib/cn';
 const NAV_SECTIONS = [
   { label: 'PDF', tools: () => toolsByCategory('pdf') },
   { label: 'Image', tools: () => [...toolsByCategory('image'), ...toolsByCategory('ai')] },
+  { label: 'Developer', tools: () => toolsByCategory('dev') },
   { label: 'Privacy', tools: () => toolsByCategory('privacy') },
 ];
 

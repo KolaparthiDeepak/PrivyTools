@@ -1,5 +1,5 @@
 import {
-  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage,
+  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -65,6 +65,11 @@ export const TOOLS: Tool[] = [
     id: 'privacy-center', name: 'Privacy Center', description: 'How your files are handled',
     route: '/privacy', category: 'privacy', icon: Lock,
     processing: 'local', status: 'live', accept: [],
+  },
+  {
+    id: 'dev-json-format', name: 'JSON Formatter', description: 'Prettify or minify JSON',
+    route: '/dev/json-format', category: 'dev', icon: Braces,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
 
