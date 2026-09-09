@@ -1,5 +1,5 @@
 import {
-  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2,
+  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -74,6 +74,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-json-yaml', name: 'JSON ⇄ YAML', description: 'Convert between JSON and YAML',
     route: '/dev/json-yaml', category: 'dev', icon: FileJson2,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-base64', name: 'Base64', description: 'Encode or decode Base64',
+    route: '/dev/base64', category: 'dev', icon: Binary,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
