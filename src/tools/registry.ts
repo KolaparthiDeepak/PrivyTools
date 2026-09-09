@@ -1,6 +1,7 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
   Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock, KeyRound,
+  GitCompareArrows,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -130,6 +131,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-jwt', name: 'JWT Decoder', description: 'Inspect a JWT without verifying it',
     route: '/dev/jwt', category: 'dev', icon: KeyRound,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-diff', name: 'Text Diff', description: 'Line-by-line comparison of two texts',
+    route: '/dev/diff', category: 'dev', icon: GitCompareArrows,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
