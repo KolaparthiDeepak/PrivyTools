@@ -1,3 +1,6 @@
+// ponytail: text-only. Binary-file → Base64 (images, PDFs) is deferred — SplitTool's
+// fileAsBytes path is built but unused here; wire a per-tool "file bytes" toggle in Phase 3.
+
 export function encodeBase64(input: string): string {
   const bytes = new TextEncoder().encode(input);
   let bin = '';
