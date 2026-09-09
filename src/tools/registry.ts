@@ -1,6 +1,6 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
-  Link, Code, Link2, Table, FileType, Type, CaseSensitive,
+  Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -115,6 +115,11 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-case', name: 'Case Converter', description: 'camelCase, snake_case, kebab-case and more',
     route: '/dev/case', category: 'dev', icon: CaseSensitive,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-timestamp', name: 'Timestamp Converter', description: 'Unix epoch to human dates and back',
+    route: '/dev/timestamp', category: 'dev', icon: Clock,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
