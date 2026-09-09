@@ -5,7 +5,7 @@ export function jsonToCsv(input: string): string {
   try {
     value = JSON.parse(input);
   } catch (e) {
-    throw new Error(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`);
+    throw new Error(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
   }
   if (!Array.isArray(value) || value.some((r) => typeof r !== 'object' || r === null)) {
     throw new Error('Expected a JSON array of objects');

@@ -11,7 +11,7 @@ export function jsonToTs(input: string, rootName = 'Root'): string {
   try {
     value = JSON.parse(input) as Json;
   } catch (e) {
-    throw new Error(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`);
+    throw new Error(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
   }
 
   const interfaces: string[] = [];
