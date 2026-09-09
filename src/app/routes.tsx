@@ -20,6 +20,9 @@ const DesignSystem = lazy(() => import('../routes/DesignSystem'));
 const DevJsonFormat = lazy(() => import('../routes/dev/JsonFormat'));
 const DevJsonYaml = lazy(() => import('../routes/dev/JsonYaml'));
 const DevBase64 = lazy(() => import('../routes/dev/Base64'));
+const DevUrlEncode = lazy(() => import('../routes/dev/UrlEncode'));
+const DevHtmlEntities = lazy(() => import('../routes/dev/HtmlEntities'));
+const DevQueryJson = lazy(() => import('../routes/dev/QueryJson'));
 
 const page = (el: React.ReactNode) => <Suspense fallback={<div className="p-8" />}>{el}</Suspense>;
 
@@ -35,6 +38,9 @@ const children: RouteObject[] = [
   { path: 'dev/json-format', element: page(<DevJsonFormat />) },
   { path: 'dev/json-yaml', element: page(<DevJsonYaml />) },
   { path: 'dev/base64', element: page(<DevBase64 />) },
+  { path: 'dev/url', element: page(<DevUrlEncode />) },
+  { path: 'dev/html-entities', element: page(<DevHtmlEntities />) },
+  { path: 'dev/query-json', element: page(<DevQueryJson />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },

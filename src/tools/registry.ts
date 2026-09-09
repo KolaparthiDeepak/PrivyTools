@@ -1,5 +1,6 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
+  Link, Code, Link2,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -79,6 +80,21 @@ export const TOOLS: Tool[] = [
   {
     id: 'dev-base64', name: 'Base64', description: 'Encode or decode Base64',
     route: '/dev/base64', category: 'dev', icon: Binary,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-url', name: 'URL Encode', description: 'Percent-encode or decode URL components',
+    route: '/dev/url', category: 'dev', icon: Link,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-html-entities', name: 'HTML Entities', description: 'Escape or unescape HTML entities',
+    route: '/dev/html-entities', category: 'dev', icon: Code,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-query-json', name: 'Query String ⇄ JSON', description: 'Parse or build URL query strings',
+    route: '/dev/query-json', category: 'dev', icon: Link2,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
