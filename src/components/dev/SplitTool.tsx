@@ -4,6 +4,7 @@ import { Button, Segmented } from '../ui';
 import { CodeEditor } from './CodeEditor';
 import { useDevTransform } from '../../hooks/useDevTransform';
 import { downloadBlob } from '../../lib/download';
+import { cn } from '../../lib/cn';
 
 export interface Direction {
   id: string;
@@ -41,9 +42,6 @@ export function SplitTool({
   const [lastOutput, setLastOutput] = useState('');
   if (output != null && output !== lastOutput) setLastOutput(output);
   const outStr = output ?? lastOutput;
-  // While a transform is in flight the shown value is stale — hide the editor
-  // so it never reads back a pending result.
-  const showOutput = !pending && outStr !== '';
 
   const swap = useCallback(() => {
     if (directions.length !== 2) return;
@@ -54,7 +52,11 @@ export function SplitTool({
   }, [directions, dirId, outStr]);
 
   const copy = useCallback(async () => {
-    await navigator.clipboard.writeText(outStr);
+    try {
+      await navigator.clipboard.writeText(outStr);
+    } catch {
+      return;
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1400);
   }, [outStr]);
@@ -148,13 +150,14 @@ export function SplitTool({
               </Button>
             </div>
           </div>
-          {showOutput ? (
-            <CodeEditor label="Output" value={outStr} readOnly language={dir.outputLanguage} />
-          ) : (
-            <div className="flex min-h-[40vh] items-center justify-center rounded-md border border-border bg-sunken px-3 text-xs text-dim">
-              {pending ? 'Converting…' : 'Output appears here'}
-            </div>
-          )}
+          <CodeEditor
+            label="Output"
+            value={outStr}
+            readOnly
+            language={dir.outputLanguage}
+            placeholder="Output appears here"
+            className={cn((pending || error) && 'opacity-50 transition-opacity')}
+          />
         </div>
       </div>
     </div>

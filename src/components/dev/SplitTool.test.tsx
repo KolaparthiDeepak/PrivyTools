@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SplitTool } from './SplitTool';
 
@@ -19,18 +19,17 @@ const dirs = [
 
 const input = () => screen.getByLabelText(/input/i, { selector: 'textarea' });
 const output = () => screen.getByLabelText(/output/i, { selector: 'textarea' });
-const findOutput = () => screen.findByLabelText(/output/i, { selector: 'textarea' });
 
 test('live transforms input to output', async () => {
   render(<SplitTool directions={dirs} />);
   await userEvent.type(input(), 'abc');
-  expect(await findOutput()).toHaveValue('ABC');
+  await waitFor(() => expect(output()).toHaveValue('ABC'));
 });
 
 test('shows error banner on bad input, keeps last output', async () => {
   render(<SplitTool directions={dirs} />);
   await userEvent.type(input(), 'ok');
-  expect(await findOutput()).toHaveValue('OK');
+  await waitFor(() => expect(output()).toHaveValue('OK'));
   await userEvent.clear(input());
   await userEvent.type(input(), 'boom');
   expect(await screen.findByRole('alert')).toHaveTextContent('nope');
@@ -40,8 +39,15 @@ test('shows error banner on bad input, keeps last output', async () => {
 test('swap moves output into input and flips direction', async () => {
   render(<SplitTool directions={dirs} />);
   await userEvent.type(input(), 'aa');
-  expect(await findOutput()).toHaveValue('AA');
+  await waitFor(() => expect(output()).toHaveValue('AA'));
   await userEvent.click(screen.getByRole('button', { name: /swap/i }));
   expect(input()).toHaveValue('AA');
-  expect(await findOutput()).toHaveValue('aa');
+  await waitFor(() => expect(output()).toHaveValue('aa'));
+});
+
+test('fileAsBytes reads a file as base64 into the input', async () => {
+  render(<SplitTool directions={dirs} fileAsBytes />);
+  const file = new File([new Uint8Array([1, 2, 3])], 'x.bin');
+  await userEvent.upload(screen.getByLabelText(/open file/i), file);
+  await waitFor(() => expect(input()).toHaveValue(btoa(String.fromCharCode(1, 2, 3))));
 });
