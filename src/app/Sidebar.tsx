@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Home, Star, PanelLeftClose, PanelLeftOpen, Shield } from 'lucide-react';
 import { TOOLS, getTool, toolsByCategory } from '../tools/registry';
+import { DEV_GROUP_ORDER, DEV_GROUPS, toolsInDevGroup } from '../tools/devGroups';
 import { usePrefs } from '../store/prefs.store';
 import { cn } from '../lib/cn';
 
@@ -71,9 +72,22 @@ export function Sidebar() {
               {sec.label}
             </span>
           )}
-          {sec.tools().map((t) => (
-            <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />
-          ))}
+          {sec.label === 'Developer'
+            ? DEV_GROUP_ORDER.map((g) => (
+                <div key={g} className="flex flex-col gap-0.5">
+                  {!collapsed && (
+                    <span className="px-2.5 pb-0.5 pt-1.5 font-mono text-[9.5px] uppercase tracking-wider text-dim/50">
+                      {DEV_GROUPS[g].label}
+                    </span>
+                  )}
+                  {toolsInDevGroup(g).map((t) => (
+                    <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />
+                  ))}
+                </div>
+              ))
+            : sec.tools().map((t) => (
+                <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />
+              ))}
         </nav>
       ))}
 
