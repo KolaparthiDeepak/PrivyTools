@@ -1,4 +1,5 @@
 import { TOOLS, getTool, CATEGORIES } from './registry';
+import { DEV_GROUP_ORDER, DEV_GROUPS } from './devGroups';
 
 test('unique ids', () => {
   const ids = TOOLS.map((t) => t.id);
@@ -50,4 +51,10 @@ test('all 15 dev tools are text kind, live, local, and route under /dev', () => 
     expect(t.processing).toBe('local');
     expect(t.route.startsWith('/dev/')).toBe(true);
   }
+});
+test('every dev tool belongs to exactly one DEV_GROUPS entry', () => {
+  const devIds = TOOLS.filter((t) => t.category === 'dev').map((t) => t.id);
+  const grouped = DEV_GROUP_ORDER.flatMap((g) => DEV_GROUPS[g].toolIds);
+  expect(new Set(grouped).size).toBe(grouped.length);
+  expect(grouped.sort()).toEqual(devIds.sort());
 });
