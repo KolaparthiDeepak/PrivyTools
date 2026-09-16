@@ -20,7 +20,7 @@ import { Button, Segmented, Slider } from '../components/ui';
 const tool = getTool('image-upscale')!;
 
 export default function ImageUpscale() {
-  const runner = useToolRunner<ResizeConfig>(upscaleImage, { scale: 2, sharpen: 0.4, smoothing: true });
+  const runner = useToolRunner<ResizeConfig>(upscaleImage, { scale: 2, sharpen: 0.4, smoothing: true }, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
   const originalUrl = useObjectUrl(runner.file);

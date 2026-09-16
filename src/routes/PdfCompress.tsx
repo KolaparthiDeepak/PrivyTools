@@ -25,7 +25,7 @@ interface Config {
 }
 
 export default function PdfCompress() {
-  const runner = useToolRunner<Config>(compressPdf, { preset: 'balanced', quality: 0.6 });
+  const runner = useToolRunner<Config>(compressPdf, { preset: 'balanced', quality: 0.6 }, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
 

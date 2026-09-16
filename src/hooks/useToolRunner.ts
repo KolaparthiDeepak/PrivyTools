@@ -1,10 +1,11 @@
 import { useCallback, useRef, useState } from 'react';
 import type { FileResult, Progress, ToolService } from '../services/types';
 import { ToolError } from '../services/types';
+import { useTrackToolUsage } from './useTrackToolUsage';
 
 type Step = 'select' | 'configure' | 'process' | 'result' | 'error';
 
-export function useToolRunner<C>(service: ToolService<C>, initialConfig: C) {
+export function useToolRunner<C>(service: ToolService<C>, initialConfig: C, toolId?: string) {
   const [step, setStep] = useState<Step>('select');
   const [files, setFiles] = useState<File[]>([]);
   const [config, setConfigState] = useState<C>(initialConfig);
@@ -60,6 +61,8 @@ export function useToolRunner<C>(service: ToolService<C>, initialConfig: C) {
     setError(null);
     setStep('select');
   }, []);
+
+  useTrackToolUsage(toolId, step === 'result');
 
   return {
     step,
