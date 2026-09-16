@@ -1,5 +1,6 @@
 import { PrivateIndicator } from '../components/privacy/PrivateIndicator';
 import { PrivacyBoard } from '../components/privacy/PrivacyBoard';
+import { UsagePanel } from '../components/privacy/UsagePanel';
 
 export default function Privacy() {
   return (
@@ -17,6 +18,7 @@ export default function Privacy() {
       </div>
       <PrivateIndicator />
       <PrivacyBoard />
+      <UsagePanel />
     </main>
   );
 }
