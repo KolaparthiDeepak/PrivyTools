@@ -30,7 +30,7 @@ export default function UrlEncode() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="URL encode and decode." />
-      <SplitTool directions={directions} inputPlaceholder="paste URL or encoded text" />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder="paste URL or encoded text" />
     </main>
   );
 }

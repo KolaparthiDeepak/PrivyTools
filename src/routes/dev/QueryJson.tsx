@@ -30,7 +30,7 @@ export default function QueryJson() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Convert query strings and JSON." />
-      <SplitTool directions={directions} inputPlaceholder="paste query string or JSON" />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder="paste query string or JSON" />
     </main>
   );
 }

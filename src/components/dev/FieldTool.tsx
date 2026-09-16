@@ -6,6 +6,7 @@ import { useDevTransform } from '../../hooks/useDevTransform';
 export interface FieldRow { label: string; value: string }
 
 interface FieldToolProps {
+  toolId: string;
   compute: (input: string) => FieldRow[];
   inputLabel: string;
   placeholder?: string;
@@ -38,9 +39,9 @@ function Row({ row }: { row: FieldRow }) {
   );
 }
 
-export function FieldTool({ compute, inputLabel, placeholder, multiline = false }: FieldToolProps) {
+export function FieldTool({ toolId, compute, inputLabel, placeholder, multiline = false }: FieldToolProps) {
   const [input, setInput] = useState('');
-  const { output, error } = useDevTransform(compute, input);
+  const { output, error } = useDevTransform(compute, input, { toolId });
   const rows = output ?? [];
 
   return (

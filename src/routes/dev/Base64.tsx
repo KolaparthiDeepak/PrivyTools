@@ -30,7 +30,7 @@ export default function Base64() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Base64 encode and decode." subtitle="Text and text files, UTF-8 safe." />
-      <SplitTool directions={directions} inputPlaceholder="paste text or Base64" />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder="paste text or Base64" />
     </main>
   );
 }

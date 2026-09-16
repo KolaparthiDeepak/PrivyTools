@@ -30,7 +30,7 @@ export default function HtmlEntities() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Encode and decode HTML entities." />
-      <SplitTool directions={directions} inputPlaceholder="paste HTML or entities" />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder="paste HTML or entities" />
     </main>
   );
 }

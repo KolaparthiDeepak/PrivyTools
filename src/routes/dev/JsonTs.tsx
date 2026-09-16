@@ -21,7 +21,7 @@ export default function JsonTs() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Generate TypeScript types from JSON." subtitle="One sample in, interfaces out. Best-effort — check the result." />
-      <SplitTool directions={directions} inputPlaceholder='{"paste":"json sample"}' />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder='{"paste":"json sample"}' />
     </main>
   );
 }

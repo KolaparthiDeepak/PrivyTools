@@ -10,6 +10,7 @@ export default function Cron() {
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Explain cron expressions." subtitle="Plain English plus the next five runs (UTC)." />
       <FieldTool
+        toolId={tool.id}
         inputLabel="Cron expression"
         placeholder="*/5 * * * *"
         compute={(s) => {

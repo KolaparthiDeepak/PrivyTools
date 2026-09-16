@@ -17,6 +17,7 @@ export interface Direction {
 }
 
 interface SplitToolProps {
+  toolId: string;
   directions: Direction[];
   inputPlaceholder?: string;
   acceptFile?: boolean;
@@ -24,6 +25,7 @@ interface SplitToolProps {
 }
 
 export function SplitTool({
+  toolId,
   directions,
   inputPlaceholder,
   acceptFile = true,
@@ -37,7 +39,7 @@ export function SplitTool({
   const [input, setInput] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const { output, error, pending } = useDevTransform(dir.transform, input);
+  const { output, error, pending } = useDevTransform(dir.transform, input, { toolId });
   const outStr = output ?? '';
 
   const swap = useCallback(() => {

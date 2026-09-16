@@ -10,6 +10,7 @@ export default function CaseConvert() {
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Convert text case." subtitle="camelCase, snake_case, kebab-case, CONSTANT_CASE, Title Case, Sentence case, and PascalCase." />
       <FieldTool
+        toolId={tool.id}
         inputLabel="Text to convert"
         placeholder="helloWorld example"
         compute={(s) => {

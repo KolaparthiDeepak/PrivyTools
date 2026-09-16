@@ -8,14 +8,14 @@ const compute = (s: string) => {
 };
 
 test('renders computed rows', async () => {
-  render(<FieldTool compute={compute} inputLabel="Text" />);
+  render(<FieldTool toolId="test-tool" compute={compute} inputLabel="Text" />);
   await userEvent.type(screen.getByLabelText('Text'), 'ab');
   expect(await screen.findByText('AB')).toBeInTheDocument();
   expect(screen.getByText('2')).toBeInTheDocument();
 });
 
 test('shows error, keeps prior rows', async () => {
-  render(<FieldTool compute={compute} inputLabel="Text" />);
+  render(<FieldTool toolId="test-tool" compute={compute} inputLabel="Text" />);
   const input = screen.getByLabelText('Text');
   await userEvent.type(input, 'ok');
   await screen.findByText('OK');

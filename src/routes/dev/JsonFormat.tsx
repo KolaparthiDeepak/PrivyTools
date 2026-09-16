@@ -28,7 +28,7 @@ export default function JsonFormat() {
         title="Format JSON."
         subtitle="Prettify or minify. Invalid JSON is flagged with the parser's message."
       />
-      <SplitTool directions={directions} inputPlaceholder='{"paste":"json here"}' />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder='{"paste":"json here"}' />
     </main>
   );
 }

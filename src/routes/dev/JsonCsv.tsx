@@ -30,7 +30,7 @@ export default function JsonCsv() {
   return (
     <main role="main" className="mx-auto flex max-w-5xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Convert JSON and CSV." subtitle="JSON must be an array of objects. Nested values become JSON text in the cell." />
-      <SplitTool directions={directions} inputPlaceholder='[{"paste":"json or csv"}]' />
+      <SplitTool toolId={tool.id} directions={directions} inputPlaceholder='[{"paste":"json or csv"}]' />
     </main>
   );
 }

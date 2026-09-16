@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTrackToolUsage } from './useTrackToolUsage';
 
 interface Result<T> {
   output: T | null;
@@ -9,7 +10,7 @@ interface Result<T> {
 export function useDevTransform<T>(
   fn: (input: string) => T,
   input: string,
-  opts: { debounceMs?: number } = {},
+  opts: { debounceMs?: number; toolId?: string } = {},
 ): Result<T> {
   const debounceMs = opts.debounceMs ?? 150;
   const [state, setState] = useState<Result<T>>({ output: null, error: null, pending: false });
@@ -36,6 +37,8 @@ export function useDevTransform<T>(
     }, debounceMs);
     return () => clearTimeout(id);
   }, [fn, input, debounceMs]);
+
+  useTrackToolUsage(opts.toolId, state.output !== null && state.error === null);
 
   return state;
 }

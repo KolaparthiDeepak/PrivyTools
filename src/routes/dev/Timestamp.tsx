@@ -10,6 +10,7 @@ export default function Timestamp() {
     <main role="main" className="mx-auto flex max-w-3xl flex-col gap-8 p-6 sm:p-10">
       <ToolHeader tool={tool} title="Convert Unix timestamps." subtitle="Epoch seconds or millis, or any date string." />
       <FieldTool
+        toolId={tool.id}
         inputLabel="Timestamp or date"
         placeholder="1735689600 or 2026-01-01"
         compute={(s) => {
