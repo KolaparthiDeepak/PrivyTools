@@ -51,7 +51,9 @@ export function PrivacyBoard() {
         <div className="flex items-center justify-between gap-3 border-b border-border p-4 sm:border-b-0">
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[10px] uppercase tracking-widest text-dim/70">Telemetry</span>
-            <span className="text-sm text-text">{telemetry ? 'On' : 'Off - nothing about your files is collected'}</span>
+            <span className="text-sm text-text">
+              {telemetry ? 'On - counts which tools you use, on this device only' : 'Off - nothing about your files is collected'}
+            </span>
           </div>
           <Toggle on={telemetry} onChange={setTelemetry} label="Telemetry" />
         </div>

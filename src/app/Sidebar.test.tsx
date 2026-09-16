@@ -24,3 +24,12 @@ test('has a Home link', () => {
   );
   expect(screen.getByRole('link', { name: /home/i })).toHaveAttribute('href', '/');
 });
+test('shows Developer sub-group headings', () => {
+  render(
+    <MemoryRouter>
+      <Sidebar />
+    </MemoryRouter>,
+  );
+  expect(screen.getByText('Converters')).toBeInTheDocument();
+  expect(screen.getByText('Encoders / Decoders')).toBeInTheDocument();
+});

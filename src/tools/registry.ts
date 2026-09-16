@@ -1,5 +1,7 @@
 import {
-  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage,
+  ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
+  Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock, KeyRound,
+  GitCompareArrows, ArrowDownUp,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -18,6 +20,7 @@ export interface Tool {
   shortcut?: string;
   processing: ProcessingMode;
   status: 'live' | 'demo';
+  kind?: 'file' | 'text';
   accept: string[];
 }
 
@@ -64,6 +67,81 @@ export const TOOLS: Tool[] = [
     id: 'privacy-center', name: 'Privacy Center', description: 'How your files are handled',
     route: '/privacy', category: 'privacy', icon: Lock,
     processing: 'local', status: 'live', accept: [],
+  },
+  {
+    id: 'dev-json-format', name: 'JSON Formatter', description: 'Prettify or minify JSON',
+    route: '/dev/json-format', category: 'dev', icon: Braces,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-yaml', name: 'JSON ⇄ YAML', description: 'Convert between JSON and YAML',
+    route: '/dev/json-yaml', category: 'dev', icon: FileJson2,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-base64', name: 'Base64', description: 'Encode or decode Base64',
+    route: '/dev/base64', category: 'dev', icon: Binary,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-url', name: 'URL Encode', description: 'Percent-encode or decode URL components',
+    route: '/dev/url', category: 'dev', icon: Link,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-html-entities', name: 'HTML Entities', description: 'Escape or unescape HTML entities',
+    route: '/dev/html-entities', category: 'dev', icon: Code,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-query-json', name: 'Query String ⇄ JSON', description: 'Parse or build URL query strings',
+    route: '/dev/query-json', category: 'dev', icon: Link2,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-csv', name: 'JSON ⇄ CSV', description: 'Convert a JSON array to CSV and back',
+    route: '/dev/json-csv', category: 'dev', icon: Table,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-json-ts', name: 'JSON → TypeScript', description: 'Infer TypeScript interfaces from a JSON sample',
+    route: '/dev/json-ts', category: 'dev', icon: FileType,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-slug', name: 'Slugify', description: 'Make URL-safe slugs from text',
+    route: '/dev/slug', category: 'dev', icon: Type,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-case', name: 'Case Converter', description: 'camelCase, snake_case, kebab-case and more',
+    route: '/dev/case', category: 'dev', icon: CaseSensitive,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-timestamp', name: 'Timestamp Converter', description: 'Unix epoch to human dates and back',
+    route: '/dev/timestamp', category: 'dev', icon: Clock,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-cron', name: 'Cron Explainer', description: 'Read a cron expression in plain English',
+    route: '/dev/cron', category: 'dev', icon: CalendarClock,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-jwt', name: 'JWT Decoder', description: 'Inspect a JWT without verifying it',
+    route: '/dev/jwt', category: 'dev', icon: KeyRound,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-diff', name: 'Text Diff', description: 'Line-by-line comparison of two texts',
+    route: '/dev/diff', category: 'dev', icon: GitCompareArrows,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-lines', name: 'Sort / Dedupe Lines', description: 'Sort, dedupe, and clean up a list',
+    route: '/dev/lines', category: 'dev', icon: ArrowDownUp,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];
 

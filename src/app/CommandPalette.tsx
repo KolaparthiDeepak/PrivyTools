@@ -1,8 +1,32 @@
 import { Command } from 'cmdk';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES, TOOLS, type Category } from '../tools/registry';
+import { CATEGORIES, TOOLS, type Category, type Tool } from '../tools/registry';
+import { DEV_GROUP_ORDER, DEV_GROUPS, toolsInDevGroup } from '../tools/devGroups';
 
-const GROUP_ORDER: Category[] = ['pdf', 'image', 'ai', 'privacy'];
+const GROUP_ORDER: Category[] = ['pdf', 'image', 'ai'];
+
+const GROUP_CLASS =
+  'px-1 py-1 font-mono text-[10px] uppercase tracking-widest text-dim/70 [&_[cmdk-group-items]]:mt-1';
+const ITEM_CLASS =
+  'flex items-center gap-2.5 rounded px-2.5 py-2 text-[13px] text-dim data-[selected=true]:bg-surface-hi data-[selected=true]:text-text';
+
+function GroupItems({ tools, go }: { tools: Tool[]; go: (route: string) => void }) {
+  return (
+    <>
+      {tools.map((t) => (
+        <Command.Item
+          key={t.id}
+          value={`${t.name} ${t.description}`}
+          onSelect={() => go(t.route)}
+          className={ITEM_CLASS}
+        >
+          <t.icon className="size-3.5" />
+          {t.name}
+        </Command.Item>
+      ))}
+    </>
+  );
+}
 
 export function CommandPalette({
   open,
@@ -36,29 +60,22 @@ export function CommandPalette({
             No tools match.
           </Command.Empty>
           {GROUP_ORDER.map((cat) => {
-            const tools = TOOLS.filter((t) => t.category === cat && t.id !== 'privacy-center');
-            if (!tools.length && cat !== 'privacy') return null;
-            const list = cat === 'privacy' ? TOOLS.filter((t) => t.category === 'privacy') : tools;
+            const list = TOOLS.filter((t) => t.category === cat);
+            if (!list.length) return null;
             return (
-              <Command.Group
-                key={cat}
-                heading={CATEGORIES[cat].label}
-                className="px-1 py-1 font-mono text-[10px] uppercase tracking-widest text-dim/70 [&_[cmdk-group-items]]:mt-1"
-              >
-                {list.map((t) => (
-                  <Command.Item
-                    key={t.id}
-                    value={`${t.name} ${t.description}`}
-                    onSelect={() => go(t.route)}
-                    className="flex items-center gap-2.5 rounded px-2.5 py-2 text-[13px] text-dim data-[selected=true]:bg-surface-hi data-[selected=true]:text-text"
-                  >
-                    <t.icon className="size-3.5" />
-                    {t.name}
-                  </Command.Item>
-                ))}
+              <Command.Group key={cat} heading={CATEGORIES[cat].label} className={GROUP_CLASS}>
+                <GroupItems tools={list} go={go} />
               </Command.Group>
             );
           })}
+          {DEV_GROUP_ORDER.map((g) => (
+            <Command.Group key={g} heading={DEV_GROUPS[g].label} className={GROUP_CLASS}>
+              <GroupItems tools={toolsInDevGroup(g)} go={go} />
+            </Command.Group>
+          ))}
+          <Command.Group heading={CATEGORIES.privacy.label} className={GROUP_CLASS}>
+            <GroupItems tools={TOOLS.filter((t) => t.category === 'privacy')} go={go} />
+          </Command.Group>
         </Command.List>
       </div>
     </Command.Dialog>

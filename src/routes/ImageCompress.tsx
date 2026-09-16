@@ -25,7 +25,7 @@ interface Config {
 }
 
 export default function ImageCompress() {
-  const runner = useToolRunner<Config>(compressImage, { quality: 0.7, format: 'image/jpeg' });
+  const runner = useToolRunner<Config>(compressImage, { quality: 0.7, format: 'image/jpeg' }, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
   const originalUrl = useObjectUrl(runner.file);

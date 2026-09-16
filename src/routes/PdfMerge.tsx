@@ -18,7 +18,7 @@ import { Button } from '../components/ui';
 const tool = getTool('pdf-merge')!;
 
 export default function PdfMerge() {
-  const runner = useToolRunner<Record<string, never>>(mergePdf, {});
+  const runner = useToolRunner<Record<string, never>>(mergePdf, {}, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
 

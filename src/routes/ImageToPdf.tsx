@@ -17,7 +17,7 @@ import { Button } from '../components/ui';
 const tool = getTool('image-to-pdf')!;
 
 export default function ImageToPdf() {
-  const runner = useToolRunner<Record<string, never>>(imagesToPdf, {});
+  const runner = useToolRunner<Record<string, never>>(imagesToPdf, {}, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
 

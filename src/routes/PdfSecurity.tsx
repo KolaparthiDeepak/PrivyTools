@@ -22,7 +22,7 @@ interface Config {
 }
 
 export default function PdfSecurity() {
-  const runner = useToolRunner<Config>(protectPdf, { mode: 'add', password: '' });
+  const runner = useToolRunner<Config>(protectPdf, { mode: 'add', password: '' }, tool.id);
   const consume = useHandoff((s) => s.consume);
   const reduced = useReducedMotion();
   const [show, setShow] = useState(false);
