@@ -4,14 +4,14 @@ import type { DiffLine } from '../../services/dev/text-diff';
 import { cn } from '../../lib/cn';
 import { useTrackToolUsage } from '../../hooks/useTrackToolUsage';
 
-export function DiffTool({ diff }: { diff: (a: string, b: string) => DiffLine[] }) {
+export function DiffTool({ toolId, diff }: { toolId: string; diff: (a: string, b: string) => DiffLine[] }) {
   const [a, setA] = useState('');
   const [b, setB] = useState('');
   const lines = useMemo(() => (a === '' && b === '' ? [] : diff(a, b)), [a, b, diff]);
   const added = lines.filter((l) => l.kind === 'add').length;
   const removed = lines.filter((l) => l.kind === 'remove').length;
 
-  useTrackToolUsage('dev-diff', lines.length > 0);
+  useTrackToolUsage(toolId, lines.length > 0);
 
   return (
     <div className="flex flex-col gap-4">

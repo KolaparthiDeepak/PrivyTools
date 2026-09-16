@@ -41,3 +41,14 @@ test('Clear usage data empties the list', async () => {
   expect(screen.getByText(/no actions completed yet/i)).toBeInTheDocument();
   expect(useUsage.getState().counts).toEqual({});
 });
+
+test('shows a clear button in the off state when stored data exists', () => {
+  useUsage.setState({ counts: { 'pdf-merge': 3 } });
+  render(<UsagePanel />);
+  expect(screen.getByRole('button', { name: /clear stored usage data/i })).toBeInTheDocument();
+});
+
+test('does not show a clear button in the off state when there is nothing to clear', () => {
+  render(<UsagePanel />);
+  expect(screen.queryByRole('button', { name: /clear/i })).toBeNull();
+});

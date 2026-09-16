@@ -70,7 +70,9 @@ cron parsing ~36KB gzipped).
 
 - No backend, no analytics, no runtime network calls. Nothing is uploaded.
 - `localStorage` holds only: favourite tool ids, recent tool ids, theme mode,
-  telemetry toggle (off by default), sidebar state. Never file bytes or names.
+  telemetry toggle (off by default), sidebar state, and - only while telemetry
+  is on - a per-tool action count (`{toolId: number}`, never file names or
+  input text). Never file bytes or names.
 - Object URLs are revoked on unmount, new file, and reset.
 - PDF Security passwords cannot contain `,` or `=` (a limit of the MuPDF
   option interface) - the UI says so.

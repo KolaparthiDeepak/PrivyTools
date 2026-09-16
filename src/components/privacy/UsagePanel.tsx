@@ -8,9 +8,15 @@ export function UsagePanel() {
   const clear = useUsage((s) => s.clear);
 
   if (!telemetry) {
+    const hasStoredData = Object.keys(counts).length > 0;
     return (
-      <div className="rounded-lg border border-border p-4 text-xs text-dim">
-        Turn on Telemetry above to start counting local tool usage. Nothing is counted while it's off.
+      <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-4 text-xs text-dim">
+        <span>Turn on Telemetry above to start counting local tool usage. Nothing is counted while it's off.</span>
+        {hasStoredData && (
+          <button type="button" onClick={clear} className="shrink-0 text-dim hover:text-text">
+            Clear stored usage data
+          </button>
+        )}
       </div>
     );
   }

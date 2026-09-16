@@ -17,13 +17,13 @@ const TOGGLES: { key: keyof LineOptions; label: string }[] = [
   { key: 'reverse', label: 'Reverse' },
 ];
 
-export function LinesTool() {
+export function LinesTool({ toolId }: { toolId: string }) {
   const [input, setInput] = useState('');
   const [opts, setOpts] = useState<LineOptions>(DEFAULTS);
   const [copied, setCopied] = useState(false);
   const output = useMemo(() => (input === '' ? '' : processLines(input, opts)), [input, opts]);
 
-  useTrackToolUsage('dev-lines', input !== '');
+  useTrackToolUsage(toolId, input !== '');
 
   const copy = async () => {
     try {

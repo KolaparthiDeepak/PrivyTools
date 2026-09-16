@@ -3,7 +3,7 @@ import { CodeEditor } from './CodeEditor';
 import type { DecodedJwt } from '../../services/dev/jwt';
 import { useTrackToolUsage } from '../../hooks/useTrackToolUsage';
 
-export function JwtTool({ decode }: { decode: (token: string) => DecodedJwt }) {
+export function JwtTool({ toolId, decode }: { toolId: string; decode: (token: string) => DecodedJwt }) {
   const [token, setToken] = useState('');
   const result = useMemo<{ data: DecodedJwt | null; error: string | null }>(() => {
     if (token.trim() === '') return { data: null, error: null };
@@ -14,7 +14,7 @@ export function JwtTool({ decode }: { decode: (token: string) => DecodedJwt }) {
     }
   }, [token, decode]);
 
-  useTrackToolUsage('dev-jwt', result.data !== null);
+  useTrackToolUsage(toolId, result.data !== null);
 
   const d = result.data;
   const pretty = (v: unknown) => (v === undefined ? '' : JSON.stringify(v, null, 2));

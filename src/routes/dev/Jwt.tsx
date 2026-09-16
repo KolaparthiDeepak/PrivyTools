@@ -13,7 +13,7 @@ export default function Jwt() {
         title="Decode a JWT."
         subtitle="Header, payload, and claims. Nothing leaves your device; the signature is not checked."
       />
-      <JwtTool decode={decodeJwt} />
+      <JwtTool toolId={tool.id} decode={decodeJwt} />
     </main>
   );
 }
