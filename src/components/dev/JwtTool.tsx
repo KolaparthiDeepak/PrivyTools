@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CodeEditor } from './CodeEditor';
 import type { DecodedJwt } from '../../services/dev/jwt';
+import { useTrackToolUsage } from '../../hooks/useTrackToolUsage';
 
 export function JwtTool({ decode }: { decode: (token: string) => DecodedJwt }) {
   const [token, setToken] = useState('');
@@ -12,6 +13,8 @@ export function JwtTool({ decode }: { decode: (token: string) => DecodedJwt }) {
       return { data: null, error: e instanceof Error ? e.message : String(e) };
     }
   }, [token, decode]);
+
+  useTrackToolUsage('dev-jwt', result.data !== null);
 
   const d = result.data;
   const pretty = (v: unknown) => (v === undefined ? '' : JSON.stringify(v, null, 2));

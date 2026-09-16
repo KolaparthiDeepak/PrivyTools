@@ -3,6 +3,7 @@ import { Copy, Check } from 'lucide-react';
 import { Segmented } from '../ui';
 import { CodeEditor } from './CodeEditor';
 import { processLines, type LineOptions } from '../../services/dev/lines';
+import { useTrackToolUsage } from '../../hooks/useTrackToolUsage';
 
 const DEFAULTS: LineOptions = {
   sort: 'none', unique: false, trim: false, caseInsensitive: false, removeBlank: false, reverse: false,
@@ -21,6 +22,8 @@ export function LinesTool() {
   const [opts, setOpts] = useState<LineOptions>(DEFAULTS);
   const [copied, setCopied] = useState(false);
   const output = useMemo(() => (input === '' ? '' : processLines(input, opts)), [input, opts]);
+
+  useTrackToolUsage('dev-lines', input !== '');
 
   const copy = async () => {
     try {
