@@ -90,7 +90,13 @@ on Encrypt. Secrets stay in component state only.
 - `CodeEditor` / `SplitTool` accept `wrap` (CodeMirror `lineWrapping`); only the
   encryption tools turn it on, for long Base64 values.
 
+- Syntax colours come from `--syn-key` / `--syn-string` / `--syn-number` /
+  `--syn-atom` tokens in `tokens.css` (light and dark values, all >= 4.5:1 on
+  `--sunken`) through a custom `HighlightStyle`. This replaces
+  `defaultHighlightStyle`, which was designed for light backgrounds and hard to
+  read in dark mode.
+
 ## 5. Known gaps
 
-- `defaultHighlightStyle` is designed for light backgrounds; some syntax colours
-  (e.g. JSON numbers) are low-contrast in dark mode.
+- YAML plain values (`privy`, `42`, `true`) are not coloured: the YAML grammar
+  does not tell these apart, so they stay in the normal text colour.

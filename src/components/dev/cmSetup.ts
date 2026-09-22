@@ -2,11 +2,22 @@
 import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { bracketMatching, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { bracketMatching, syntaxHighlighting, HighlightStyle } from '@codemirror/language';
+import { tags as t } from '@lezer/highlight';
 import { json } from '@codemirror/lang-json';
 import { yaml } from '@codemirror/lang-yaml';
 
 export type EditorLanguage = 'json' | 'yaml' | 'text';
+
+// Colours come from tokens.css so they switch with the light/dark theme.
+const syntaxStyle = HighlightStyle.define([
+  { tag: [t.propertyName, t.definition(t.propertyName)], color: 'hsl(var(--syn-key))' },
+  { tag: [t.string, t.special(t.string)], color: 'hsl(var(--syn-string))' },
+  { tag: t.number, color: 'hsl(var(--syn-number))' },
+  { tag: [t.bool, t.null, t.atom, t.keyword], color: 'hsl(var(--syn-atom))' },
+  { tag: [t.comment, t.meta, t.punctuation, t.bracket, t.separator], color: 'var(--text-dim)' },
+  { tag: t.invalid, color: 'hsl(var(--danger))' },
+]);
 
 const langExt = (l: EditorLanguage): Extension[] =>
   l === 'json' ? [json()] : l === 'yaml' ? [yaml()] : [];
@@ -27,7 +38,7 @@ export function createEditor(opts: {
       lineNumbers(),
       history(),
       bracketMatching(),
-      syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+      syntaxHighlighting(syntaxStyle),
       keymap.of([...defaultKeymap, ...historyKeymap]),
       EditorView.editable.of(!opts.readOnly),
       EditorState.readOnly.of(opts.readOnly),
