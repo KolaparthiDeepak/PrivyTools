@@ -1,16 +1,51 @@
-import { NavLink } from 'react-router-dom';
-import { Home, Star, PanelLeftClose, PanelLeftOpen, Shield } from 'lucide-react';
-import { TOOLS, getTool, toolsByCategory } from '../tools/registry';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, Star, PanelLeftClose, PanelLeftOpen, Shield, ChevronRight } from 'lucide-react';
+import { TOOLS, getTool, toolsByCategory, type Tool } from '../tools/registry';
 import { DEV_GROUP_ORDER, DEV_GROUPS, toolsInDevGroup } from '../tools/devGroups';
 import { usePrefs } from '../store/prefs.store';
 import { cn } from '../lib/cn';
 
-const NAV_SECTIONS = [
+// Developer sub-groups are promoted to top-level sections.
+const NAV_SECTIONS: { label: string; tools: () => Tool[] }[] = [
   { label: 'PDF', tools: () => toolsByCategory('pdf') },
   { label: 'Image', tools: () => [...toolsByCategory('image'), ...toolsByCategory('ai')] },
-  { label: 'Developer', tools: () => toolsByCategory('dev') },
+  ...DEV_GROUP_ORDER.map((g) => ({ label: DEV_GROUPS[g].label, tools: () => toolsInDevGroup(g) })),
   { label: 'Privacy', tools: () => toolsByCategory('privacy') },
 ];
+
+const sectionFor = (pathname: string) =>
+  NAV_SECTIONS.find((sec) => sec.tools().some((t) => t.route === pathname))?.label ?? null;
+
+function Section({ label, open, onToggle, icon, children }: {
+  label: string;
+  open: boolean;
+  onToggle: () => void;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const id = `nav-${label.replace(/\W+/g, '-').toLowerCase()}`;
+  return (
+    <nav aria-label={label} className="flex flex-col gap-0.5">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={onToggle}
+        className="flex items-center gap-1.5 rounded-md px-2.5 py-2 text-left text-[13.5px] font-semibold text-text hover:bg-surface-hi"
+      >
+        {icon}
+        <span className="flex-1 truncate">{label}</span>
+        <ChevronRight className={cn('size-3.5 text-dim transition-transform duration-200', open && 'rotate-90')} />
+      </button>
+      {open && (
+        <div id={id} className="flex flex-col gap-0.5 pl-2">
+          {children}
+        </div>
+      )}
+    </nav>
+  );
+}
 
 function Item({ to, label, Icon, collapsed }: { to: string; label: string; Icon: typeof Home; collapsed: boolean }) {
   return (
@@ -36,6 +71,18 @@ export function Sidebar() {
   const collapsed = usePrefs((s) => s.sidebarCollapsed);
   const toggle = usePrefs((s) => s.toggleSidebar);
   const favorites = usePrefs((s) => s.favorites);
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState<string | null>(() => sectionFor(pathname));
+
+  // Navigating elsewhere (palette, home cards) reveals that page's section.
+  useEffect(() => {
+    const sec = sectionFor(pathname);
+    if (sec) setOpen(sec);
+  }, [pathname]);
+
+  const toggleSection = (label: string) => setOpen((o) => (o === label ? null : label));
+  const favoriteTools = favorites.map((id) => getTool(id)).filter((t): t is Tool => t !== undefined);
+  const item = (t: Tool) => <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />;
 
   return (
     <div className={cn('flex h-full flex-col gap-5', collapsed ? 'items-center p-2' : 'p-3.5')}>
@@ -65,45 +112,30 @@ export function Sidebar() {
         <Item to="/" label="Home" Icon={Home} collapsed={collapsed} />
       </nav>
 
-      {NAV_SECTIONS.map((sec) => (
-        <nav key={sec.label} className="flex flex-col gap-0.5">
-          {!collapsed && (
-            <span className="px-2.5 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-dim/70">
-              {sec.label}
-            </span>
-          )}
-          {sec.label === 'Developer'
-            ? DEV_GROUP_ORDER.map((g) => (
-                <div key={g} className="flex flex-col gap-0.5">
-                  {!collapsed && (
-                    <span className="px-2.5 pb-0.5 pt-1.5 font-mono text-[9.5px] uppercase tracking-wider text-dim/50">
-                      {DEV_GROUPS[g].label}
-                    </span>
-                  )}
-                  {toolsInDevGroup(g).map((t) => (
-                    <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />
-                  ))}
-                </div>
-              ))
-            : sec.tools().map((t) => (
-                <Item key={t.id} to={t.route} label={t.name} Icon={t.icon} collapsed={collapsed} />
-              ))}
+      {collapsed ? (
+        // Icon rail: no headings to click, so list every tool.
+        <nav aria-label="Tools" className="flex flex-col gap-0.5">
+          {NAV_SECTIONS.flatMap((sec) => sec.tools()).map(item)}
         </nav>
-      ))}
-
-      {favorites.length > 0 && (
-        <nav className="flex flex-col gap-0.5">
-          {!collapsed && (
-            <span className="flex items-center gap-1.5 px-2.5 pb-1 pt-2 font-mono text-[10px] uppercase tracking-widest text-dim/70">
-              <Star className="size-3" /> Favorites
-            </span>
-          )}
-          {favorites.map((id) => getTool(id)).filter(Boolean).map((t) => (
-            <Item key={t!.id} to={t!.route} label={t!.name} Icon={t!.icon} collapsed={collapsed} />
+      ) : (
+        <div className="flex flex-col gap-0.5">
+          {NAV_SECTIONS.map((sec) => (
+            <Section key={sec.label} label={sec.label} open={open === sec.label} onToggle={() => toggleSection(sec.label)}>
+              {sec.tools().map(item)}
+            </Section>
           ))}
-        </nav>
+          {favoriteTools.length > 0 && (
+            <Section
+              label="Favorites"
+              icon={<Star className="size-3.5 text-dim" />}
+              open={open === 'Favorites'}
+              onToggle={() => toggleSection('Favorites')}
+            >
+              {favoriteTools.map(item)}
+            </Section>
+          )}
+        </div>
       )}
-
 
       <p className="sr-only">{TOOLS.length} tools available</p>
     </div>
