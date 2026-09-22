@@ -3,6 +3,7 @@
 **Status:** Approved design
 **Date:** 2026-09-09
 **Builds on:** `2026-08-29-privytools-dashboard-design.md`, `2026-08-30-image-pdf-conversion-design.md`
+**Update 2026-09-22:** six of these tools were later removed and an Encryption group was added. See `2026-09-22-encryption-tools-and-nav-design.md`.
 
 ## 1. Goal
 
