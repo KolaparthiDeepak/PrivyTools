@@ -36,15 +36,15 @@ test('every processing tool is live and local', () => {
 test('exact tool set', () => {
   expect(TOOLS.map((t) => t.id).sort()).toEqual(
     [
-      'dev-base64', 'dev-case', 'dev-cron', 'dev-diff', 'dev-html-entities', 'dev-json-csv', 'dev-json-format', 'dev-json-ts', 'dev-json-yaml', 'dev-jwt', 'dev-lines', 'dev-query-json', 'dev-slug', 'dev-timestamp', 'dev-url',
+      'dev-base64', 'dev-cipher', 'dev-cron', 'dev-diff', 'dev-jasypt', 'dev-json-csv', 'dev-json-format', 'dev-json-yaml', 'dev-jwt', 'dev-timestamp', 'dev-url',
       'image-compress', 'image-to-pdf', 'image-upscale',
       'pdf-compress', 'pdf-merge', 'pdf-security', 'pdf-to-image', 'privacy-center',
     ].sort(),
   );
 });
-test('all 15 dev tools are text kind, live, local, and route under /dev', () => {
+test('all 11 dev tools are text kind, live, local, and route under /dev', () => {
   const dev = TOOLS.filter((t) => t.category === 'dev');
-  expect(dev.length).toBe(15);
+  expect(dev.length).toBe(11);
   for (const t of dev) {
     expect(t.kind).toBe('text');
     expect(t.status).toBe('live');

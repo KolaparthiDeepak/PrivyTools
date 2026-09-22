@@ -1,6 +1,6 @@
 // Dynamically imported — keeps CodeMirror out of the app bundle and out of jsdom.
 import { EditorState, type Extension } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLine, placeholder } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { bracketMatching, syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
 import { json } from '@codemirror/lang-json';
@@ -16,6 +16,7 @@ export function createEditor(opts: {
   doc: string;
   language: EditorLanguage;
   readOnly: boolean;
+  wrap?: boolean;
   placeholderText?: string;
   label: string;
   onChange: (v: string) => void;
@@ -24,7 +25,6 @@ export function createEditor(opts: {
     doc: opts.doc,
     extensions: [
       lineNumbers(),
-      highlightActiveLine(),
       history(),
       bracketMatching(),
       syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
@@ -36,7 +36,17 @@ export function createEditor(opts: {
         '&': { fontFamily: 'var(--font-mono, monospace)', fontSize: '13px', backgroundColor: 'transparent' },
         '.cm-content': { padding: '12px 0' },
         '.cm-gutters': { backgroundColor: 'transparent', border: 'none', color: 'var(--text-dim)' },
+        // CodeMirror's defaults are light-blue; use the app's neutral tokens so both themes match.
+        '&.cm-focused': { outline: 'none' },
+        '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
+          backgroundColor: 'var(--border-hi)',
+          outline: 'none',
+        },
+        '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--text)' },
+        '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection':
+          { backgroundColor: 'var(--border-hi)' },
       }),
+      opts.wrap ? EditorView.lineWrapping : [],
       opts.placeholderText ? placeholder(opts.placeholderText) : [],
       ...langExt(opts.language),
       EditorView.updateListener.of((u) => {

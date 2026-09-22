@@ -15,7 +15,7 @@ test('every button on the merge route has an accessible name', async () => {
   }
 });
 test('a dev tool route has one h1, a main, and named buttons', async () => {
-  render(<RouterProvider router={makeTestRouter(['/dev/lines'])} />);
+  render(<RouterProvider router={makeTestRouter(['/dev/diff'])} />);
   await screen.findByRole('main');
   expect(screen.queryByText(/can.?t find that page/i)).toBeNull();
   expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);

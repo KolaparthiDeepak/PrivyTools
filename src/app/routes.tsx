@@ -20,18 +20,14 @@ const DesignSystem = lazy(() => import('../routes/DesignSystem'));
 const DevJsonFormat = lazy(() => import('../routes/dev/JsonFormat'));
 const DevJsonYaml = lazy(() => import('../routes/dev/JsonYaml'));
 const DevJsonCsv = lazy(() => import('../routes/dev/JsonCsv'));
-const DevJsonTs = lazy(() => import('../routes/dev/JsonTs'));
 const DevBase64 = lazy(() => import('../routes/dev/Base64'));
 const DevUrlEncode = lazy(() => import('../routes/dev/UrlEncode'));
-const DevHtmlEntities = lazy(() => import('../routes/dev/HtmlEntities'));
-const DevQueryJson = lazy(() => import('../routes/dev/QueryJson'));
-const DevSlugify = lazy(() => import('../routes/dev/Slugify'));
-const DevCaseConvert = lazy(() => import('../routes/dev/CaseConvert'));
 const DevTimestamp = lazy(() => import('../routes/dev/Timestamp'));
 const DevCron = lazy(() => import('../routes/dev/Cron'));
 const DevJwt = lazy(() => import('../routes/dev/Jwt'));
 const DevDiff = lazy(() => import('../routes/dev/Diff'));
-const DevLines = lazy(() => import('../routes/dev/Lines'));
+const DevJasypt = lazy(() => import('../routes/dev/Jasypt'));
+const DevCipher = lazy(() => import('../routes/dev/Cipher'));
 
 const page = (el: React.ReactNode) => <Suspense fallback={<div className="p-8" />}>{el}</Suspense>;
 
@@ -47,18 +43,14 @@ const children: RouteObject[] = [
   { path: 'dev/json-format', element: page(<DevJsonFormat />) },
   { path: 'dev/json-yaml', element: page(<DevJsonYaml />) },
   { path: 'dev/json-csv', element: page(<DevJsonCsv />) },
-  { path: 'dev/json-ts', element: page(<DevJsonTs />) },
   { path: 'dev/base64', element: page(<DevBase64 />) },
   { path: 'dev/url', element: page(<DevUrlEncode />) },
-  { path: 'dev/html-entities', element: page(<DevHtmlEntities />) },
-  { path: 'dev/query-json', element: page(<DevQueryJson />) },
-  { path: 'dev/slug', element: page(<DevSlugify />) },
-  { path: 'dev/case', element: page(<DevCaseConvert />) },
   { path: 'dev/timestamp', element: page(<DevTimestamp />) },
   { path: 'dev/cron', element: page(<DevCron />) },
   { path: 'dev/jwt', element: page(<DevJwt />) },
   { path: 'dev/diff', element: page(<DevDiff />) },
-  { path: 'dev/lines', element: page(<DevLines />) },
+  { path: 'dev/jasypt', element: page(<DevJasypt />) },
+  { path: 'dev/cipher', element: page(<DevCipher />) },
   { path: 'privacy', element: page(<Privacy />) },
   ...(import.meta.env.DEV ? [{ path: '_ds', element: page(<DesignSystem />) }] : []),
   { path: '*', element: <NotFound /> },

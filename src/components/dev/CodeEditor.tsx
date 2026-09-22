@@ -8,6 +8,8 @@ interface CodeEditorProps {
   onChange?: (v: string) => void;
   language?: EditorLanguage;
   readOnly?: boolean;
+  /** Soft-wrap long lines (e.g. long Base64 blobs). */
+  wrap?: boolean;
   placeholder?: string;
   label: string;
   className?: string;
@@ -18,6 +20,7 @@ export function CodeEditor({
   onChange,
   language = 'text',
   readOnly = false,
+  wrap = false,
   placeholder,
   label,
   className,
@@ -46,6 +49,7 @@ export function CodeEditor({
           doc: value,
           language,
           readOnly,
+          wrap,
           placeholderText: placeholder,
           label,
           onChange: (v) => cb.current?.(v),
@@ -60,7 +64,7 @@ export function CodeEditor({
       view.current?.destroy();
       view.current = null;
     };
-    // language/readOnly/placeholder are fixed per tool instance
+    // language/readOnly/wrap/placeholder are fixed per tool instance
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

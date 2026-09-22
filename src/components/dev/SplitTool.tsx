@@ -22,6 +22,7 @@ interface SplitToolProps {
   inputPlaceholder?: string;
   acceptFile?: boolean;
   fileAsBytes?: boolean;
+  wrap?: boolean;
 }
 
 export function SplitTool({
@@ -30,6 +31,7 @@ export function SplitTool({
   inputPlaceholder,
   acceptFile = true,
   fileAsBytes = false,
+  wrap = false,
 }: SplitToolProps) {
   const [dirId, setDirId] = useState(directions[0].id);
   const dir = useMemo(
@@ -98,7 +100,7 @@ export function SplitTool({
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+          <div className="flex h-8 items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-widest text-dim/70">Input</span>
             {acceptFile && (
               <label className="flex cursor-pointer items-center gap-1 text-xs text-dim hover:text-text">
@@ -124,6 +126,7 @@ export function SplitTool({
               value={input}
               onChange={setInput}
               language={dir.inputLanguage}
+              wrap={wrap}
               placeholder={inputPlaceholder}
             />
           </div>
@@ -138,13 +141,13 @@ export function SplitTool({
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
+          <div className="flex h-8 items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-widest text-dim/70">Output</span>
             <div className="flex gap-1">
-              <Button variant="ghost" onClick={copy} aria-label="Copy output">
+              <Button variant="ghost" size="sm" className="px-2" onClick={copy} aria-label="Copy output">
                 {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
               </Button>
-              <Button variant="ghost" onClick={download} aria-label="Download output">
+              <Button variant="ghost" size="sm" className="px-2" onClick={download} aria-label="Download output">
                 <Download className="size-3.5" />
               </Button>
             </div>
@@ -154,6 +157,7 @@ export function SplitTool({
             value={outStr}
             readOnly
             language={dir.outputLanguage}
+            wrap={wrap}
             placeholder="Output appears here"
             className={cn((pending || error) && 'opacity-50 transition-opacity')}
           />
