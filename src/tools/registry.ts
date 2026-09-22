@@ -1,7 +1,7 @@
 import {
   ShieldCheck, Minimize2, Combine, ImageDown, Sparkles, Lock, Images, FileImage, Braces, FileJson2, Binary,
-  Link, Code, Link2, Table, FileType, Type, CaseSensitive, Clock, CalendarClock, KeyRound,
-  GitCompareArrows, ArrowDownUp,
+  Link, Table, Clock, CalendarClock, KeyRound,
+  GitCompareArrows, LockKeyhole, FileKey,
   type LucideIcon,
 } from 'lucide-react';
 import type { Category } from './categories';
@@ -89,33 +89,8 @@ export const TOOLS: Tool[] = [
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
   {
-    id: 'dev-html-entities', name: 'HTML Entities', description: 'Escape or unescape HTML entities',
-    route: '/dev/html-entities', category: 'dev', icon: Code,
-    processing: 'local', status: 'live', kind: 'text', accept: [],
-  },
-  {
-    id: 'dev-query-json', name: 'Query String ⇄ JSON', description: 'Parse or build URL query strings',
-    route: '/dev/query-json', category: 'dev', icon: Link2,
-    processing: 'local', status: 'live', kind: 'text', accept: [],
-  },
-  {
     id: 'dev-json-csv', name: 'JSON ⇄ CSV', description: 'Convert a JSON array to CSV and back',
     route: '/dev/json-csv', category: 'dev', icon: Table,
-    processing: 'local', status: 'live', kind: 'text', accept: [],
-  },
-  {
-    id: 'dev-json-ts', name: 'JSON → TypeScript', description: 'Infer TypeScript interfaces from a JSON sample',
-    route: '/dev/json-ts', category: 'dev', icon: FileType,
-    processing: 'local', status: 'live', kind: 'text', accept: [],
-  },
-  {
-    id: 'dev-slug', name: 'Slugify', description: 'Make URL-safe slugs from text',
-    route: '/dev/slug', category: 'dev', icon: Type,
-    processing: 'local', status: 'live', kind: 'text', accept: [],
-  },
-  {
-    id: 'dev-case', name: 'Case Converter', description: 'camelCase, snake_case, kebab-case and more',
-    route: '/dev/case', category: 'dev', icon: CaseSensitive,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
   {
@@ -139,8 +114,13 @@ export const TOOLS: Tool[] = [
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
   {
-    id: 'dev-lines', name: 'Sort / Dedupe Lines', description: 'Sort, dedupe, and clean up a list',
-    route: '/dev/lines', category: 'dev', icon: ArrowDownUp,
+    id: 'dev-jasypt', name: 'Jasypt', description: 'Encrypt or decrypt Jasypt PBE with password, algorithm, and iterations',
+    route: '/dev/jasypt', category: 'dev', icon: FileKey,
+    processing: 'local', status: 'live', kind: 'text', accept: [],
+  },
+  {
+    id: 'dev-cipher', name: 'AES / DES Cipher', description: 'Encrypt or decrypt with a passphrase or raw key + IV',
+    route: '/dev/cipher', category: 'dev', icon: LockKeyhole,
     processing: 'local', status: 'live', kind: 'text', accept: [],
   },
 ];

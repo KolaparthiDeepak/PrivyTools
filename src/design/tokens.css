@@ -26,6 +26,11 @@
   --danger: 0 60% 45%;
   --diff-add: 150 45% 35%;
   --diff-remove: 0 60% 45%;
+  /* Code-editor syntax colours (all >= 4.5:1 on --sunken). */
+  --syn-key: 28 80% 32%;
+  --syn-string: 150 55% 26%;
+  --syn-number: 212 76% 38%;
+  --syn-atom: 270 50% 42%;
 
   --tracking-display: -0.035em;
   --radius-sm: 8px;
@@ -68,5 +73,9 @@
   --danger: 0 65% 62%;
   --diff-add: 150 50% 55%;
   --diff-remove: 0 65% 62%;
+  --syn-key: 32 90% 66%;
+  --syn-string: 150 50% 60%;
+  --syn-number: 212 90% 72%;
+  --syn-atom: 270 80% 78%;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 40px rgba(0, 0, 0, 0.35);
 }

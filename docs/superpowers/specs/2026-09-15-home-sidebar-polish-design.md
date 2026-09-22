@@ -3,6 +3,7 @@
 **Status:** Approved design
 **Date:** 2026-09-15
 **Builds on:** `2026-08-29-privytools-dashboard-design.md`, `2026-09-09-dev-tools-design.md`
+**Update 2026-09-22:** the sidebar part is replaced by a one-section-open accordion with the Developer sub-groups as top-level sections. See `2026-09-22-encryption-tools-and-nav-design.md`.
 
 ## 1. Goal
 
